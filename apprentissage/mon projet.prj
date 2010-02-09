@@ -197,7 +197,7 @@ Startaddr=8000
 Lockedmode=0
 UseFlash=0
 Nb Obj=1
-c:\tp\mobile\monprojettest1.obj
+c:\tp\mobile\clign_diode.obj
 Nb Flash=0
 End Group Flashing
 Begin Group Bank switching
@@ -211,7 +211,7 @@ Usebank=0
 Flip=0
 Noplm=1
 Nb Modules=2
-MONPROJETTEST1 C:\TP\MOBILE\MONPROJETTEST1.OBJ 2147483647
+CLIGN_DIODE C:\TP\MOBILE\CLIGN_DIODE.OBJ 2147483647
 _WKRDTP_ C:\TP\MOBILE\MON?PROJET.DTP 2147483647
 Nb Pages=1
 0 1 0
@@ -626,7 +626,7 @@ App Number=1
 Name=mon projet.aof
 Type=0
 Tool Ref=LX51
-Info Code=97
+Info Code=46
 Info XData=0
 Info Data=64
 Target Ref=80C51
@@ -642,12 +642,12 @@ LaunchMode=0
 End Group 80C51
 Nb Nodes=1
 Node Begin
-Relative Path=monprojettest1.a51
+Relative Path=clign_diode.a51
 Type=0
 Tool Ref=MA51
 Format Ref=
 Nb Dep=0
-Info Code=97
+Info Code=46
 Info Const=0
 Info XData=0
 Info PData=0
@@ -659,7 +659,7 @@ Do Link=1
 Do Translate=1
 Do Load=0
 Nb Nodes=0
-MakeDate=-851806265
+MakeDate=-851800575
 Node End
 Do Translate=1
 PostLinker Ref=

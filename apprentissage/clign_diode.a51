@@ -18,6 +18,8 @@ debut:			mov tmod,#01h
 					mov a,#40
 					clr tf0
 					setb tr0
+					setb ea
+					setb et0
 					
 suite:			jmp suite
 					
