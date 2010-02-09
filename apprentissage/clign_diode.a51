@@ -14,26 +14,28 @@
 					
 					org 0030h
 debut:			mov tmod,#01h
-					acall chargement
-					mov a,#40
+					lcall chargement
+					mov r7,#0
 					clr tf0
 					setb tr0
 					setb ea
 					setb et0
 					
-suite:			jmp suite
+suite:			clr c
+					mov a,r7
+					subb a,#100
+					jnc suite2
 					
-chargement:		mov th0,#0c3h
-					mov tl0,#50h
+					jmp suite
+					
+chargement:		mov th0,#0d8h
+					mov tl0,#0f0h
 					ret
 				
 interup:			clr tr0
 					clr tf0
-					dec a
-					jnz continue
-					cpl p3.1
-					mov a,#40
-continue:		acall chargement
+					inc r7
+continue:		lcall chargement
 					setb tr0
 					reti
 					
