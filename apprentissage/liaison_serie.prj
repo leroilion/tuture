@@ -137,6 +137,22 @@ ModeAuto=1
 End Group General
 End Options CodeCompressor51
 
+Path=..\..\RIDE\BIN\lib51v32.dll
+Name=LIBMAN51
+SrcExt=
+ObjExt=
+Target Translate=0
+Begin Options LIBMAN51
+End Options LIBMAN51
+
+Path=..\..\RIDE\BIN\libxav32.dll
+Name=LIBMANMX
+SrcExt=
+ObjExt=
+Target Translate=0
+Begin Options LIBMANMX
+End Options LIBMANMX
+
 Path=..\..\RIDE\BIN\lx51v32.dll
 Name=LX51
 SrcExt=*.obj
@@ -196,8 +212,7 @@ ResData=0
 Startaddr=8000
 Lockedmode=0
 UseFlash=0
-Nb Obj=1
-c:\tp\mobile\clign_diode.obj
+Nb Obj=0
 Nb Flash=0
 End Group Flashing
 Begin Group Bank switching
@@ -210,9 +225,7 @@ Genmacro=1
 Usebank=0
 Flip=0
 Noplm=1
-Nb Modules=2
-CLIGN_DIODE C:\TP\MOBILE\CLIGN_DIODE.OBJ 2147483647
-_WKRDTP_ C:\TP\MOBILE\MON?PROJET.DTP 2147483647
+Nb Modules=0
 Nb Pages=1
 0 1 0
 End Group Bank switching
@@ -335,6 +348,22 @@ Macro=0
 Mod51=0
 End Group Source
 End Options MAMX
+
+Path=..\..\RIDE\BIN\oh16v32.dll
+Name=OH16
+SrcExt=*.aof
+ObjExt=*.hex
+Target Translate=0
+Begin Options OH16
+End Options OH16
+
+Path=..\..\RIDE\BIN\oh51v32.dll
+Name=OH51
+SrcExt=*.aof
+ObjExt=*.hex
+Target Translate=0
+Begin Options OH51
+End Options OH51
 
 Path=..\..\RIDE\BIN\rc51v32.dll
 Name=RC51
@@ -588,42 +617,10 @@ IsPrompt=0
 End Group Options
 End Options OROM
 
-Path=..\..\RIDE\BIN\lib51v32.dll
-Name=LIBMAN51
-SrcExt=
-ObjExt=
-Target Translate=0
-Begin Options LIBMAN51
-End Options LIBMAN51
-
-Path=..\..\RIDE\BIN\libxav32.dll
-Name=LIBMANMX
-SrcExt=
-ObjExt=
-Target Translate=0
-Begin Options LIBMANMX
-End Options LIBMANMX
-
-Path=..\..\RIDE\BIN\oh16v32.dll
-Name=OH16
-SrcExt=*.aof
-ObjExt=*.hex
-Target Translate=0
-Begin Options OH16
-End Options OH16
-
-Path=..\..\RIDE\BIN\oh51v32.dll
-Name=OH51
-SrcExt=*.aof
-ObjExt=*.hex
-Target Translate=0
-Begin Options OH51
-End Options OH51
-
 
 [Nodes]
 App Number=1
-Name=mon projet.aof
+Name=liaison_serie.aof
 Type=0
 Tool Ref=LX51
 Info Code=0
@@ -649,11 +646,7 @@ PostLinker Ref=
 Nb Desktop Files=0
 
 [Closed Files]
-Nb Closed Files=2
-c:\tp\mobile\monprojettest1.a51 (0,0-0,0) 0
-
-c:\tp\mobile\clign_diode.a51 (0,0-0,0) 0
-
+Nb Closed Files=0
 
 [Dim Views]
 Nb Dim Views=13
@@ -678,5 +671,5 @@ Debug=
 (0,0-0,0)
 
 [LastSel]
-LastAOF=c:\tp\mobile\mon projet.aof
+LastAOF=c:\tp\mobile\liaison_serie.aof
 
