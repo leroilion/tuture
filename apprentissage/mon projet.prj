@@ -626,7 +626,19 @@ App Number=1
 Name=mon projet.aof
 Type=0
 Tool Ref=LX51
+<<<<<<< .mine
+<<<<<<< .mine
+<<<<<<< .mine
+Info Code=107
+=======
 Info Code=108
+=======
+Info Code=46
+=======
+Info Code=108
+>>>>>>> .r11
+>>>>>>> .r7
+>>>>>>> .r11
 Info XData=0
 Info Data=64
 Target Ref=80C51
@@ -647,7 +659,19 @@ Type=0
 Tool Ref=MA51
 Format Ref=
 Nb Dep=0
+<<<<<<< .mine
+<<<<<<< .mine
+<<<<<<< .mine
+Info Code=107
+=======
 Info Code=108
+=======
+Info Code=46
+=======
+Info Code=108
+>>>>>>> .r11
+>>>>>>> .r7
+>>>>>>> .r11
 Info Const=0
 Info XData=0
 Info PData=0
@@ -659,7 +683,19 @@ Do Link=1
 Do Translate=1
 Do Load=0
 Nb Nodes=0
+<<<<<<< .mine
+<<<<<<< .mine
+<<<<<<< .mine
+MakeDate=-851723106
+=======
 MakeDate=-851723749
+=======
+MakeDate=-851800575
+=======
+MakeDate=-851723749
+>>>>>>> .r11
+>>>>>>> .r7
+>>>>>>> .r11
 Node End
 Do Translate=1
 PostLinker Ref=
@@ -669,7 +705,9 @@ PostLinker Ref=
 Nb Desktop Files=0
 
 [Closed Files]
-Nb Closed Files=1
+Nb Closed Files=2
+c:\tp\mobile\clign_diode.a51 (0,0-0,0) 0
+
 c:\tp\mobile\monprojettest1.a51 (0,0-0,0) 0
 
 
