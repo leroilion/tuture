@@ -4,10 +4,11 @@
 						org 0030h
 message:				db 'LA reponse est 42'
 						db 0
-						
-						org 00ffh		
+							
 debut1:				lcall init_ls					
-fin:					jb P1.7,fin
+fin:					clr p1.6
+						jb P1.7,fin
+						setb p1.6
 						lcall debut
 						sjmp fin						
 						
@@ -20,17 +21,17 @@ boucle:				clr a
 						inc dptr
 						sjmp boucle
 						
-init_ls:				mov 98h,#01000000b
+init_ls:				mov scon,#01000010b
 						mov th1,#230
 						mov tmod,#00100000b
 						setb tr1
 						ret
 
 emi_car:				mov c,p
-						;mov acc.7,c
+						mov acc.7,c
 						mov sbuf,a
+attente:				jb ti,attente
 						clr ti
-						jb ti,emi_car
 						ret
 						
 						
