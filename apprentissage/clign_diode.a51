@@ -15,7 +15,6 @@
 					org 0030h
 init:				mov tmod,#01h
 					lcall chargement
-					mov r7,#0
 					clr tf0
 					setb tr0
 					setb ea
@@ -70,11 +69,8 @@ chargement:		mov th0,#0d8h
 				
 interup:			clr tr0
 					clr tf0
-					dec a
-					jnz continue
-					cpl p3.1
-					mov a,#10
-continue:		acall chargement
+					inc r0
+					acall chargement
 					setb tr0
 					reti
 					
