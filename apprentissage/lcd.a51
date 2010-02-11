@@ -1,11 +1,11 @@
 ;Affichage LCD
 
-lcd_rs					equ p0.2
-lcd_rw					equ p0.1
-lcd_en					equ p0.3
+lcd_rs					bit p2.0
+lcd_rw					bit p2.1
+lcd_en					bit p2.2
 lcd_data					equ p1
-lcd_busy					equ p1.7
-diode						equ p3.0
+lcd_busy					bit p1.7
+diode						bit p3.0
 
 							org 0000h
 							ljmp init
@@ -29,17 +29,17 @@ init:						clr diode
 boucle:					jnb tf1,boucle					;Attente des 50ms
 
 debut:					setb diode
+							mov lcd_data,#14h				;Definir le mouvement du curseur vers la droite
+							lcall en_lcd_code
 							mov lcd_data,#0ch				;Allumage du lcd
 							lcall en_lcd_code
 							mov lcd_data,#38h				;LCD sur 2 lignes
 							lcall en_lcd_code
-							mov lcd_data,#80h				;Encriture sur la première ligne
-							lcall en_lcd_code
-							mov lcd_data,#14h				;Definir le mouvement du curseur vers la droite
-							lcall en_lcd_code
 							mov lcd_data,01h				;On efface l'afficheur
 							lcall en_lcd_code
 							
+suite1:					mov lcd_data,#80h				;Encriture sur la première ligne
+							lcall en_lcd_code
 							mov dptr,#message1
 boucle1:					clr a
 							movc a,@a+dptr
@@ -51,16 +51,18 @@ boucle1:					clr a
 							inc dptr
 							sjmp boucle1
 							
-suite:					mov dptr,#message2
+suite:					mov lcd_data,#0c0h				;Encriture sur la première ligne
+							lcall en_lcd_code
+							mov dptr,#message2
 boucle2:					clr a
 							movc a,@a+dptr
-							jz debut
+							jz suite1
 							mov lcd_data,a
 							lcall en_lcd_data
 							mov lcd_data,#06h
 							lcall en_lcd_code
 							inc dptr
-							sjmp boucle
+							sjmp boucle2
 
 
 
