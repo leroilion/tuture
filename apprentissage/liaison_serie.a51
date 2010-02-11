@@ -2,8 +2,10 @@
 						ljmp debut1
 						
 						org 0030h
-message:				db 'LA reponse à la vie, l univers et tout le reste est 42'
+message:				db 'LA reponse a la vie, l univers et tout le reste est 42'
 						db 0dh
+						db 0dh
+						db 0ah
 						db 0
 							
 debut1:				lcall init_ls					
@@ -39,3 +41,4 @@ attente:				jnb ti,attente
 						
 						
 						end
+

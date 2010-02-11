@@ -197,7 +197,7 @@ Startaddr=8000
 Lockedmode=0
 UseFlash=0
 Nb Obj=1
-c:\tp\mobile\liaison_serie.obj
+c:\tp\mobile\lcd.obj
 Nb Flash=0
 End Group Flashing
 Begin Group Bank switching
@@ -211,8 +211,8 @@ Usebank=0
 Flip=0
 Noplm=1
 Nb Modules=2
-LIAISON_SERIE C:\TP\MOBILE\LIAISON_SERIE.OBJ 2147483647
-_WKRDTP_ C:\TP\MOBILE\LIAISON_SERIE.DTP 2147483647
+LCD C:\TP\MOBILE\LCD.OBJ 2147483647
+_WKRDTP_ C:\TP\MOBILE\LCD.DTP 2147483647
 Nb Pages=1
 0 1 0
 End Group Bank switching
@@ -623,10 +623,10 @@ End Options OH51
 
 [Nodes]
 App Number=1
-Name=liaison_serie.aof
+Name=lcd.aof
 Type=0
 Tool Ref=LX51
-Info Code=116
+Info Code=157
 Info XData=0
 Info Data=64
 Target Ref=80C51
@@ -642,12 +642,12 @@ LaunchMode=0
 End Group 80C51
 Nb Nodes=1
 Node Begin
-Relative Path=liaison_serie.a51
+Relative Path=lcd.a51
 Type=0
 Tool Ref=MA51
 Format Ref=
 Nb Dep=0
-Info Code=116
+Info Code=157
 Info Const=0
 Info XData=0
 Info PData=0
@@ -659,16 +659,14 @@ Do Link=1
 Do Translate=1
 Do Load=0
 Nb Nodes=0
-MakeDate=-851636355
+MakeDate=-851630880
 Node End
 Do Translate=1
 PostLinker Ref=
 
 
 [Desktop Files]
-Nb Desktop Files=1
-c:\tp\mobile\liaison_serie.a51 (2147483647,2147483647-2147483647,2147483647) 7
-
+Nb Desktop Files=0
 
 [Closed Files]
 Nb Closed Files=0
@@ -679,9 +677,9 @@ Nb Dim Views=13
 1 (0,0-0,0)
 2 (0,0-0,0)
 3 (0,0-0,0)
-4 (66,66-1106,520)
+4 (0,0-0,0)
 5 (0,0-0,0)
-6 (22,22-506,512)
+6 (0,0-0,0)
 7 (0,0-0,0)
 8 (0,0-0,0)
 9 (0,0-0,0)
@@ -693,8 +691,8 @@ Nb Dim Views=13
 Debug=
 
 [Project Rect]
-(2147483647,2147483647-2147483647,2147483647)
+(0,0-0,0)
 
 [LastSel]
-LastAOF=c:\tp\mobile\liaison_serie.aof
+LastAOF=c:\tp\mobile\lcd.aof
 
