@@ -38,33 +38,27 @@ debut:					setb diode
 							mov lcd_data,01h				;On efface l'afficheur
 							lcall en_lcd_code
 							
-suite1:					mov lcd_data,#80h				;Encriture sur la première ligne
+main:						mov lcd_data,#80h				;Encriture sur la première ligne
 							lcall en_lcd_code
 							mov dptr,#message1
-boucle1:					clr a
-							movc a,@a+dptr
-							jz suite
-							mov lcd_data,a
-							lcall en_lcd_data
-							mov lcd_data,#06h
-							lcall en_lcd_code
-							inc dptr
-							sjmp boucle1
-							
-suite:					mov lcd_data,#0c0h				;Encriture sur la première ligne
+							lcall envoie_data
+							mov lcd_data,#0c0h				;Encriture sur la première ligne
 							lcall en_lcd_code
 							mov dptr,#message2
-boucle2:					clr a
+							lcall envoie_data
+							sjmp main				
+
+
+envoie_data:			clr a
 							movc a,@a+dptr
-							jz suite1
+							jz fin
 							mov lcd_data,a
 							lcall en_lcd_data
 							mov lcd_data,#06h
 							lcall en_lcd_code
 							inc dptr
-							sjmp boucle2
-
-
+							sjmp envoie_data
+fin:						ret
 
 
 en_lcd_code:			clr lcd_rs						;Envoie d'une instruction rs=0, rw=0, front descendant sur e
