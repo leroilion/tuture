@@ -37,21 +37,51 @@ init_ecran:				mov lcd_data,#14h				;Definir le mouvement du curseur vers la dro
 							lcall en_lcd_code
 							
 main:						lcall envoie_message
-							lcall chrono
+							lcall wait
+							lcall decal_d
+							lcall wait
+							lcall decal_g
+							lcall wait
 							lcall lcd_clr
-							lcall chrono
+							lcall wait
 							sjmp main
+							
+decal_d:					mov b,#16
+decal_d_1:				mov lcd_data,#1ch
+							lcall en_lcd_code
+							lcall chrono
+							dec b
+							mov a,b
+							jnz decal_d_1
+							ret
+							
+decal_g:					mov b,#16
+decal_g_1:				mov lcd_data,#18h
+							lcall en_lcd_code
+							lcall chrono
+							dec b
+							mov a,b
+							jnz decal_g_1
+							ret
 							
 lcd_clr:					mov lcd_data,#01h				;On efface l'afficheur
 							lcall en_lcd_code
+							ret
+
+
+wait:						mov b,#4
+wait1:					lcall chrono
+							dec b
+							mov a,b
+							jnz wait1
 							ret
 							
 chrono:					mov a,tmod
 							anl a,#11110000b
 							orl a,#00000001b
 							mov tmod,a
-							mov a,#40
-chrono1:					mov th0,#03h
+							mov a,#5
+chrono1:					mov th0,#3ch
 							mov tl0,#0b0h
 							clr tf0
 							setb tr0
