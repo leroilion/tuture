@@ -16,8 +16,7 @@ message1:				db 'ISE 2010 BONJOUR'
 message2:				db '  BON  TRAVAIL  '
 							db 0
 							
-init:						clr diode
-							mov a,tmod						;Initialisation du timer 1
+init:						mov a,tmod						;Initialisation du timer 1
 							anl a,#00001111b
 							orl a,#00010000b
 							mov tmod,a
@@ -28,8 +27,7 @@ init:						clr diode
 							
 boucle:					jnb tf1,boucle					;Attente des 50ms
 
-debut:					setb diode
-							mov lcd_data,#14h				;Definir le mouvement du curseur vers la droite
+init_ecran:				mov lcd_data,#14h				;Definir le mouvement du curseur vers la droite
 							lcall en_lcd_code
 							mov lcd_data,#0ch				;Allumage du lcd
 							lcall en_lcd_code
@@ -38,7 +36,33 @@ debut:					setb diode
 							mov lcd_data,01h				;On efface l'afficheur
 							lcall en_lcd_code
 							
-main:						mov lcd_data,#80h				;Encriture sur la première ligne
+main:						lcall envoie_message
+							lcall chrono
+							lcall lcd_clr
+							lcall chrono
+							sjmp main
+							
+lcd_clr:					mov lcd_data,#01h				;On efface l'afficheur
+							lcall en_lcd_code
+							ret
+							
+chrono:					mov a,tmod
+							anl a,#11110000b
+							orl a,#00000001b
+							mov tmod,a
+							mov a,#40
+chrono1:					mov th0,#03h
+							mov tl0,#0b0h
+							clr tf0
+							setb tr0
+chrono2:					jnb tf0,chrono2
+							dec a
+							jnz chrono1
+							cpl diode
+							ret
+							
+							
+envoie_message:		mov lcd_data,#80h				;Encriture sur la première ligne
 							lcall en_lcd_code
 							mov dptr,#message1
 							lcall envoie_data
@@ -46,7 +70,7 @@ main:						mov lcd_data,#80h				;Encriture sur la première ligne
 							lcall en_lcd_code
 							mov dptr,#message2
 							lcall envoie_data
-							sjmp main				
+							ret			
 
 
 envoie_data:			clr a
