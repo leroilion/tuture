@@ -5,6 +5,7 @@ lcd_rw					equ p0.1
 lcd_en					equ p0.3
 lcd_data					equ p1
 lcd_busy					equ p1.7
+diode						equ p3.0
 
 							org 0000h
 							ljmp init
@@ -15,7 +16,8 @@ message1:				db 'ISE 2010 BONJOUR'
 message2:				db '  BON  TRAVAIL  '
 							db 0
 							
-init:						mov a,tmod						;Initialisation du timer 1
+init:						clr diode
+							mov a,tmod						;Initialisation du timer 1
 							anl a,#00001111b
 							orl a,#00010000b
 							mov tmod,a
@@ -26,11 +28,16 @@ init:						mov a,tmod						;Initialisation du timer 1
 							
 boucle:					jnb tf1,boucle					;Attente des 50ms
 
-debut:					mov lcd_data,#0ch				;Allumage du lcd
+debut:					setb diode
+							mov lcd_data,#0ch				;Allumage du lcd
 							lcall en_lcd_code
 							mov lcd_data,#38h				;LCD sur 2 lignes
 							lcall en_lcd_code
 							mov lcd_data,#80h				;Encriture sur la première ligne
+							lcall en_lcd_code
+							mov lcd_data,#14h				;Definir le mouvement du curseur vers la droite
+							lcall en_lcd_code
+							mov lcd_data,01h				;On efface l'afficheur
 							lcall en_lcd_code
 							
 							mov dptr,#message1
@@ -82,4 +89,3 @@ check_busy:				jb lcd_busy,check_busy
 							
 							
 							end
-
