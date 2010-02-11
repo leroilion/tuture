@@ -666,7 +666,9 @@ PostLinker Ref=
 
 
 [Desktop Files]
-Nb Desktop Files=0
+Nb Desktop Files=1
+c:\tp\mobile\lcd.a51 (2147483647,2147483647-2147483647,2147483647) 65
+
 
 [Closed Files]
 Nb Closed Files=1
@@ -693,7 +695,7 @@ Nb Dim Views=13
 Debug=
 
 [Project Rect]
-(0,0-0,0)
+(2147483647,2147483647-2147483647,2147483647)
 
 [LastSel]
 LastAOF=c:\tp\mobile\lcd.aof
