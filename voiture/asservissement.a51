@@ -123,6 +123,11 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 
 main:							mov r2,#128
 								mov r3,#128
+								setb dir_ou_mot
+								lcall conv_pourcent_nb
+								clr dir_ou_mot
+								lcall conv_pourcent_nb
+								lcall chargement
 								sjmp main
 
 ;************************************************************************
