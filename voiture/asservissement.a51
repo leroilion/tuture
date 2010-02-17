@@ -198,13 +198,13 @@ relancer:					clr	tr0
 ;***************************************************************
 
 conv_pourcent_nb:			jnb	dir_ou_mot,conv_pourcent_nb_mot		;Si le bit vaut 0, on va faire la conversion pour le moteur
-								mov	R2,a
+								mov	a,R2
 								mov	b,#4
 								mul	ab
 								mov	r4,a
 								mov	r5,b
 								
-conv_pourcent_nb_mot:	mov	r3,a
+conv_pourcent_nb_mot:	mov	a,r3
 								mov	b,#2
 								mul	ab
 								mov	r6,a
