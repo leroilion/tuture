@@ -121,6 +121,9 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 ;* Main : boucle principal																*
 ;************************************************************************
 
+main:							mov r2,#128
+								mov r3,#128
+								sjmp main
 
 ;************************************************************************
 ;* Interruption timer 0 pour le cycle asservissement							*
