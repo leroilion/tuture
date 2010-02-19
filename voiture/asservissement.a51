@@ -106,8 +106,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								mov	mot_rest_low,#mot_ref_rest_low
 								mov	mot_rest_high,#mot_ref_rest_high
 								mov r2,#128
-								mov r3,#0
-								mov r1,#50
+								mov r3,#160
 								
 ;Mise en place de la phase 1 pour le cycle asservissement :
 								mov	r0,#0
