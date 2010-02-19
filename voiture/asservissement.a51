@@ -167,8 +167,8 @@ asserv2:						cjne	r0,#2,asserv3
 								
 asserv3:						mov	tim_low,mot_rest_low
 								mov	tim_high,mot_rest_high
-								mov 	r0,#3
-								setb	moteur
+								mov 	r0,#0
+								clr	moteur
 								clr	mutex
 								sjmp	relancer	
 								
