@@ -262,10 +262,10 @@ chargement:					jb		dir_ou_mot,chargement_fin
 								clr	c
 								mov	a,#0ffh
 								subb	a,6dh
-								mov	dir_low,a
+								mov	mot_low,a
 								mov	a,#0ffh
 								subb	a,6ch
-								mov	dir_high,a
+								mov	mot_high,a
 								
 ;Ensuite, le complément de la direction
 								clr 	c
@@ -278,10 +278,10 @@ chargement:					jb		dir_ou_mot,chargement_fin
 								clr	c
 								mov	a,#0ffh
 								subb	a,6dh
-								mov	dir_rest_low,a
+								mov	mot_rest_low,a
 								mov	a,#0ffh
 								subb	a,6ch
-								mov	dir_rest_high,a
+								mov	mot_rest_high,a
 
 chargement_fin:			ret
 								
