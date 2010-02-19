@@ -203,6 +203,7 @@ conv_pourcent_nb:			jnb	dir_ou_mot,conv_pourcent_nb_mot		;Si le bit vaut 0, on v
 								mul	ab
 								mov	r4,a
 								mov	r5,b
+								ret
 								
 conv_pourcent_nb_mot:	mov	a,r3
 								mov	b,#2
