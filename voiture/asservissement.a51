@@ -29,7 +29,6 @@ capteur_gauche				bit	p3.2              									;Sur interruption INT1
 ;************************************************************************
 
 mutex							bit	7fh														;Permet de locker le changement de valeur dans le timer pour ne pas perturber un cycle
-dir_ou_mot					bit	7eh														;Pour la conversion pourcentage ==> hexa, permet de savoir s'il s'agit de la direction ou du moteur
 dir_low						equ	7fh														;Variable contenant la valeur à charger dans le timer pour la direction
 dir_high						equ	7eh
 dir_rest_low				equ	7dh
@@ -90,6 +89,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								clr	direction
 								clr	moteur
 								clr	mutex
+								mov	tmod,#1
 
 ;Activation des interruptions :								
 								setb	et0														;activation du timer 0
@@ -105,6 +105,9 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								mov	mot_high,#mot_ref_high
 								mov	mot_rest_low,#mot_ref_rest_low
 								mov	mot_rest_high,#mot_ref_rest_high
+								mov r2,#128
+								mov r3,#0
+								mov r1,#50
 								
 ;Mise en place de la phase 1 pour le cycle asservissement :
 								mov	r0,#0
@@ -121,11 +124,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 ;* Main : boucle principal																*
 ;************************************************************************
 
-main:							mov r2,#128
-								mov r3,#128
-								setb dir_ou_mot
-								lcall conv_pourcent_nb
-								clr dir_ou_mot
+main:							
 								lcall conv_pourcent_nb
 								lcall chargement
 								sjmp main
@@ -170,7 +169,7 @@ asserv3:						mov	tim_low,mot_rest_low
 								mov 	r0,#0
 								clr	moteur
 								clr	mutex
-								sjmp	relancer	
+suite:						sjmp	relancer	 
 								
 ;Relancer le timer :
 relancer:					clr	tr0
@@ -197,16 +196,13 @@ relancer:					clr	tr0
 ;* On va utiliser des entiers signé (128 étant le zéro)			*
 ;***************************************************************
 
-conv_pourcent_nb:			jnb	dir_ou_mot,conv_pourcent_nb_mot		;Si le bit vaut 0, on va faire la conversion pour le moteur
-								mov	a,R2
+conv_pourcent_nb:			mov	a,R2
 								mov	b,#4
 								mul	ab
 								mov	r4,a
 								mov	r5,b
-								ret
-								
-conv_pourcent_nb_mot:	mov	a,r3
-								mov	b,#2
+								mov	a,r3
+								mov	b,#4
 								mul	ab
 								mov	r6,a
 								mov	r7,b
@@ -218,7 +214,7 @@ conv_pourcent_nb_mot:	mov	a,r3
 ;* si le mutex est libre.															*
 ;*********************************************************************
 
-chargement:					jb		dir_ou_mot,chargement_fin
+chargement:					jb		mutex,chargement_fin
 ;On commence par la direction, normal
 								clr 	c
 								mov	a,#0dch
@@ -254,10 +250,10 @@ chargement:					jb		dir_ou_mot,chargement_fin
 ;Puis on s'occupe du moteur
 								clr 	c
 								mov	a,#0dch
-								add	a,r4
+								add	a,r6
 								mov	6dh,a
 								mov	a,#03h
-								addc	a,r5
+								addc	a,r7
 								mov	6ch,a
 								clr	c
 								mov	a,#0ffh
@@ -270,10 +266,10 @@ chargement:					jb		dir_ou_mot,chargement_fin
 ;Ensuite, le complément de la direction
 								clr 	c
 								mov	a,#080h
-								subb	a,r4
+								subb	a,r6
 								mov	6dh,a
 								mov	a,#40h
-								subb	a,r5
+								subb	a,r7
 								mov	6ch,a
 								clr	c
 								mov	a,#0ffh
