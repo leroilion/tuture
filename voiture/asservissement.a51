@@ -37,6 +37,12 @@ mot_low						equ	7bh
 mot_high						equ	7ah
 mot_rest_low				equ	79h
 mot_rest_high				equ	78h
+var_etat						equ	77h
+tempo							equ	76h
+
+pause_faite					bit	7eh
+prec_g						bit   7dh
+prec_m						bit	7ch
 
 tim_low						equ	6eh														;Variable intermédiaire pour le timer	
 tim_high						equ	6fh
@@ -58,6 +64,10 @@ mot_ref_low					equ	0fah
 mot_ref_high				equ	24h
 mot_ref_rest_low			equ	0c1h
 mot_ref_rest_high			equ	80h
+temp							equ	15
+lim_bas						equ	10
+lim_haut						equ	245
+temp_mot						equ	20
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -279,5 +289,82 @@ chargement:					jb		mutex,chargement_fin
 								mov	mot_rest_high,a
 
 chargement_fin:			ret
+
+;*************************************************************************************
+;* Fonction permettant de changer la direction et la vitesse en fonction             *
+;* de notre variable d'état                                                          *
+;*************************************************************************************
+agir:							cjne	var_etat,#0,etat1
+etat0.1:						mov	R2,#128
+								mov	R3,#150													;Activation du moteur
+								clr	is_the_first_time
+								ret
+								
+; Si la variable d'état vaut 1, on fait:
+; if( var_etat == 1 )
+; {
+;		R3 = 150;									//Activation du moteur
+;		if( !(R2 < 128))							//Si R2 ne correspond pas à la variable d'état (genre aller à droite alors qu'i lfaut aller à gauche)
+;		{
+;			R2 = 128;
+;			tempo = 0;
+;		}
+;		else
+;		{
+;			if( tempo != temp )					//Si la temporisation n'a pas eu lieu
+;			{
+;				if( R2 != lim_bas )				//Si R2 n'a pas atteint la valeur limite
+;				{
+;					tempo = 0;						//alors on reset le tempo et on incrémente la direction
+;					R2--;
+;				}
+;			}
+;		}
+;		tempo++;
+;	}
+etat1:						cjne	var_etat,#1,etat2
+etat1.0.1:					mov	R3,#150													;Activation du moteur
+								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
+								mov	a,R2
+								subb	a,#128
+								jc		etat1.1
+								mov	R2,#128													;On charge la valeur du milieu
+								mov	tempo,#0
+etat1.1:						cjne	tempo,#temp,etat1.2									;Verification de la temporisation pour ne pas braquer trop vite
+								cjne	R2,#lim_bas,etat1.2									;Si on est en buté basse, on arrete tout
+								mov	tempo,#0
+								dec	R2
+etat1.2:						inc	tempo
+								ret
+								
+										
+etat2:						cjne	var_etat,#2,etat3
+								sjmp	etat1.0.1
+								
+etat3:						cjne	var_etat,#3,etat4
+etat3.0.1:					mov	R3,#150
+								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
+								mov	a,R2
+								subb	a,#128
+								jnc	etat3.1
+								mov	R2,#128													;On charge la valeur du milieu
+								mov	tempo,#0
+etat3.1:						cjne	tempo,#temp,etat3.2									;Verification de la temporisation pour ne pas braquer trop vite
+								cjne	R2,#lim_haut,etat3.2									;Si on est en buté basse, on arrete tout
+								mov	tempo,#0
+								inc	R2
+etat3.2:						inc	tempo
+								ret	
+								
+etat4:						cjne	var_etat,#4,etat5
+								sjmp	etat3.0.1
+
+										 
+etat5:						cjne	var_etat,#5,etat5
+								mov R3,#0
+								ret		
+								
+etat6:						sjmp	etat0.1
+								
 								
 								end
