@@ -134,6 +134,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 ;************************************************************************
 
 main:							
+								lcall	agir
 								lcall conv_pourcent_nb
 								lcall chargement
 								sjmp main
@@ -294,10 +295,10 @@ chargement_fin:			ret
 ;* Fonction permettant de changer la direction et la vitesse en fonction             *
 ;* de notre variable d'état                                                          *
 ;*************************************************************************************
-agir:							cjne	var_etat,#0,etat1
-etat0.1:						mov	R2,#128
+agir:							mov	a,var_etat
+								cjne	a,#0,etat1
+etat0_1:						mov	R2,#128
 								mov	R3,#150													;Activation du moteur
-								clr	is_the_first_time
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
@@ -322,49 +323,51 @@ etat0.1:						mov	R2,#128
 ;		}
 ;		tempo++;
 ;	}
-etat1:						cjne	var_etat,#1,etat2
-etat1.0.1:					mov	R3,#150													;Activation du moteur
+etat1:						cjne	a,#1,etat2
+etat1_0_1:					mov	R3,#150													;Activation du moteur
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#128
-								jc		etat1.1
+								jc		etat1_1
 								mov	R2,#128													;On charge la valeur du milieu
 								mov	tempo,#0
-etat1.1:						cjne	tempo,#temp,etat1.2									;Verification de la temporisation pour ne pas braquer trop vite
-								cjne	R2,#lim_bas,etat1.2									;Si on est en buté basse, on arrete tout
+etat1_1:						mov	a,tempo
+								cjne	a,#temp,etat1_2									;Verification de la temporisation pour ne pas braquer trop vite
+								cjne	R2,#lim_bas,etat1_2									;Si on est en buté basse, on arrete tout
 								mov	tempo,#0
 								dec	R2
-etat1.2:						inc	tempo
+etat1_2:						inc	tempo
 								ret
 								
 										
-etat2:						cjne	var_etat,#2,etat3
-								sjmp	etat1.0.1
+etat2:						cjne	a,#2,etat3
+								sjmp	etat1_0_1
 								
-etat3:						cjne	var_etat,#3,etat4
-etat3.0.1:					mov	R3,#150
+etat3:						cjne	a,#3,etat4
+etat3_0_1:					mov	R3,#150
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#128
-								jnc	etat3.1
+								jnc	etat3_1
 								mov	R2,#128													;On charge la valeur du milieu
 								mov	tempo,#0
-etat3.1:						cjne	tempo,#temp,etat3.2									;Verification de la temporisation pour ne pas braquer trop vite
-								cjne	R2,#lim_haut,etat3.2									;Si on est en buté basse, on arrete tout
+etat3_1:						mov	a,tempo
+								cjne	a,#temp,etat3_2									;Verification de la temporisation pour ne pas braquer trop vite
+								cjne	R2,#lim_haut,etat3_2									;Si on est en buté basse, on arrete tout
 								mov	tempo,#0
 								inc	R2
-etat3.2:						inc	tempo
+etat3_2:						inc	tempo
 								ret	
 								
-etat4:						cjne	var_etat,#4,etat5
-								sjmp	etat3.0.1
+etat4:						cjne	a,#4,etat5
+								sjmp	etat3_0_1
 
 										 
-etat5:						cjne	var_etat,#5,etat5
+etat5:						cjne	a,#5,etat5
 								mov R3,#0
 								ret		
 								
-etat6:						sjmp	etat0.1
+etat6:						sjmp	etat0_1
 								
 								
 								end
