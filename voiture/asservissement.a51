@@ -39,6 +39,7 @@ mot_rest_low				equ	79h
 mot_rest_high				equ	78h
 var_etat						equ	77h
 tempo							equ	76h
+le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	75h
 
 pause_faite					bit	7eh
 prec_g						bit   7dh
@@ -68,6 +69,8 @@ temp							equ	15
 lim_bas						equ	10
 lim_haut						equ	245
 temp_mot						equ	20
+t50us_h						equ   3Ch
+t50us_l						equ   0AFh
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -99,7 +102,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								clr	direction
 								clr	moteur
 								clr	mutex
-								mov	tmod,#1
+								mov	tmod,#00010001b
 
 ;Activation des interruptions :								
 								setb	et0														;activation du timer 0
@@ -352,7 +355,7 @@ etat3_0_1:					mov	R3,#150
 								mov	R2,#128													;On charge la valeur du milieu
 								mov	tempo,#0
 etat3_1:						mov	a,tempo
-								cjne	a,#temp,etat3_2									;Verification de la temporisation pour ne pas braquer trop vite
+								cjne	a,#temp,etat3_2										;Verification de la temporisation pour ne pas braquer trop vite
 								cjne	R2,#lim_haut,etat3_2									;Si on est en buté basse, on arrete tout
 								mov	tempo,#0
 								inc	R2
@@ -368,6 +371,80 @@ etat5:						cjne	a,#5,etat5
 								ret		
 								
 etat6:						sjmp	etat0_1
+		
+;******************************************************************************
+; Foction de Tomk                                                             *
+;******************************************************************************
+
+choix_etat:					mov	A,P3
+								anl	A,#1100b ; on garde uniquement les pins des capteurs
 								
+t_nn:							cjne	A,#0,t_nb
+								mov	var_etat,#0
+								sjmp	t_fin
+
+t_nb:							cjne	A,#1000b,t_bn
+								mov	var_etat,#1
+								sjmp	t_fin
+
+t_bn:							cjne	A,#100b,t_bb
+								mov	var_etat,#3
+								sjmp	t_fin
 								
+t_bb:							;dernier cas, pas besoin de cjne
+								mov	A,var_etat
+								cjne	A,#0,t_bbd
+								mov	var_etat,#5
+								setb	prec_m
+								sjmp	t_timer_start_pause
+
+t_bbd:						cjne	A,#1,t_bbg
+								mov	var_etat,#5
+								clr	prec_g
+								sjmp	t_timer_start_attente
+
+t_bbg:						cjne	A,#3,t_prec
+								mov	var_etat,#5
+								setb	prec_g
+								sjmp	t_timer_start_attente
+									
+t_prec:						cjne	A,#5,t_bbmb
+								jnb	tf1,t_fin
+								djnz	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer,	t_fin
+								setb	pause_faite
+								clr	tr1
+								jnb	prec_m,t_pg
+								mov	var_etat,#6
+								sjmp	t_fin
+
+t_pg:							jnb	prec_g,t_pd
+								mov	var_etat,#4
+								sjmp	t_fin
+
+t_pg:							;
+								mov	var_etat,#2
+								sjmp	t_fin
+
+t_bbmb:						;dernier cas aussi
+								jb		pause_faite
+								jnb	tf1,t_fin
+								djnz	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer,	t_fin
+								mov 	var_etat,#5
+								sjmp	t_timer_start_pause
+                                       
+t_timer_start_attente:	mov	th1,#t50us_h
+								mov	tl1,#t50us_l
+								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #2
+								setb	tr1
+								sjmp	t_fin
+
+t_timer_start_pause:		mov	th1,#t50us_h
+								mov	tl1,#t50us_l
+								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #40
+								setb	tr1
+								sjmp	t_fin
+
+
+								
+																							
 								end
