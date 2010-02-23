@@ -333,7 +333,8 @@ etat1_0_1:					mov	R3,#150													;Activation du moteur
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#129
-								jc		etat1_1
+								;jc		etat1_1
+								sjmp		etat1_1
 								mov	R2,#128													;On charge la valeur du milieu
 								mov	tempo,#0
 etat1_1:						mov	a,tempo
@@ -355,7 +356,8 @@ etat3_0_1:					mov	R3,#150
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#127
-								jnc	etat3_1
+								;jnc	etat3_1
+								sjmp	etat3_1
 								mov	R2,#128													;On charge la valeur du milieu
 								mov	tempo,#0
 etat3_1:						mov	a,tempo
@@ -443,7 +445,7 @@ t_bbmb:						;dernier cas aussi
 								ljmp	t_timer_start_pause
                                        
 t_timer_start_attente:	lcall	t_regler_50ms
-								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #2
+								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #10
 								ljmp	t_fin
 
 t_timer_start_pause:		lcall	t_regler_50ms
@@ -463,4 +465,3 @@ init_bits_choix_etat:	clr	prec_g
 								clr	pause_faite
 								ret							
 								end
-
