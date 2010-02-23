@@ -65,7 +65,7 @@ mot_ref_low					equ	0fah
 mot_ref_high				equ	24h
 mot_ref_rest_low			equ	0c1h
 mot_ref_rest_high			equ	80h
-temp							equ	15
+temp							equ	2fh
 lim_bas						equ	10
 lim_haut						equ	245
 temp_mot						equ	20
@@ -103,7 +103,8 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								clr	moteur
 								clr	mutex
 								mov	tmod,#00010001b
-
+								lcall	init_bits_choix_etat
+								
 ;Activation des interruptions :								
 								setb	et0														;activation du timer 0
 								setb	ea															;activation de l'ensemble des interruptions
@@ -137,6 +138,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 ;************************************************************************
 
 main:							
+								lcall	choix_etat
 								lcall	agir
 								lcall conv_pourcent_nb
 								lcall chargement
@@ -159,7 +161,7 @@ int_timer_0:				push	psw														;Sauvegarde du psw et de l'accumulateur
 asserv0:						cjne	r0,#0,asserv1											;Si ce n'est pas la phase 0, on va tester la phase 1
 								mov	tim_low,dir_low
 								mov	tim_high,dir_high
-								mov 	r0,#1
+								mov 	r0,#1;
 								setb	direction
 								sjmp	relancer
 								
@@ -330,15 +332,17 @@ etat1:						cjne	a,#1,etat2
 etat1_0_1:					mov	R3,#150													;Activation du moteur
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
-								subb	a,#128
+								subb	a,#129
 								jc		etat1_1
 								mov	R2,#128													;On charge la valeur du milieu
 								mov	tempo,#0
 etat1_1:						mov	a,tempo
 								cjne	a,#temp,etat1_2									;Verification de la temporisation pour ne pas braquer trop vite
-								cjne	R2,#lim_bas,etat1_2									;Si on est en buté basse, on arrete tout
-								mov	tempo,#0
+								cjne	R2,#lim_bas,etat1_1_1							;Si on est en buté basse, on arrete tout
+								sjmp	etat1_2
+etat1_1_1:					mov	tempo,#0
 								dec	R2
+								ret
 etat1_2:						inc	tempo
 								ret
 								
@@ -350,14 +354,15 @@ etat3:						cjne	a,#3,etat4
 etat3_0_1:					mov	R3,#150
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
-								subb	a,#128
+								subb	a,#127
 								jnc	etat3_1
 								mov	R2,#128													;On charge la valeur du milieu
 								mov	tempo,#0
 etat3_1:						mov	a,tempo
 								cjne	a,#temp,etat3_2										;Verification de la temporisation pour ne pas braquer trop vite
-								cjne	R2,#lim_haut,etat3_2									;Si on est en buté basse, on arrete tout
-								mov	tempo,#0
+								cjne	R2,#lim_haut,etat3_1_1								;Si on est en buté basse, on arrete tout
+								sjmp	etat3_2
+etat3_1_1:					mov	tempo,#0
 								inc	R2
 etat3_2:						inc	tempo
 								ret	
@@ -366,11 +371,11 @@ etat4:						cjne	a,#4,etat5
 								sjmp	etat3_0_1
 
 										 
-etat5:						cjne	a,#5,etat5
+etat5:						cjne	a,#5,etat6
 								mov R3,#0
 								ret		
 								
-etat6:						sjmp	etat0_1
+etat6:						ljmp	etat0_1
 		
 ;******************************************************************************
 ; Foction de Tomk                                                             *
@@ -379,72 +384,83 @@ etat6:						sjmp	etat0_1
 choix_etat:					mov	A,P3
 								anl	A,#1100b ; on garde uniquement les pins des capteurs
 								
-t_nn:							cjne	A,#0,t_nb
+t_nn:							cjne	A,#1100b,t_nb
 								mov	var_etat,#0
-								sjmp	t_fin
+								ljmp	t_fin
 
-t_nb:							cjne	A,#1000b,t_bn
+t_nb:							cjne	A,#0100b,t_bn
 								mov	var_etat,#1
-								sjmp	t_fin
+								ljmp	t_fin
 
-t_bn:							cjne	A,#100b,t_bb
+t_bn:							cjne	A,#1000b,t_bb
 								mov	var_etat,#3
-								sjmp	t_fin
+								ljmp	t_fin
 								
 t_bb:							;dernier cas, pas besoin de cjne
 								mov	A,var_etat
 								cjne	A,#0,t_bbd
 								mov	var_etat,#5
+								lcall	init_bits_choix_etat
 								setb	prec_m
-								sjmp	t_timer_start_pause
+								ljmp	t_timer_start_pause
 
 t_bbd:						cjne	A,#1,t_bbg
-								mov	var_etat,#5
+								mov	var_etat,#2
+								lcall	init_bits_choix_etat
 								clr	prec_g
-								sjmp	t_timer_start_attente
+								ljmp	t_timer_start_attente
 
 t_bbg:						cjne	A,#3,t_prec
-								mov	var_etat,#5
+								mov	var_etat,#4
+								lcall	init_bits_choix_etat
 								setb	prec_g
-								sjmp	t_timer_start_attente
+								ljmp	t_timer_start_attente
 									
 t_prec:						cjne	A,#5,t_bbmb
 								jnb	tf1,t_fin
+								lcall	t_regler_50ms
 								djnz	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer,	t_fin
 								setb	pause_faite
 								clr	tr1
 								jnb	prec_m,t_pg
 								mov	var_etat,#6
-								sjmp	t_fin
+								ljmp	t_fin
 
 t_pg:							jnb	prec_g,t_pd
 								mov	var_etat,#4
-								sjmp	t_fin
+								ljmp	t_fin
 
-t_pg:							;
+t_pd:							;
 								mov	var_etat,#2
-								sjmp	t_fin
+								ljmp	t_fin
 
 t_bbmb:						;dernier cas aussi
-								jb		pause_faite
+								jb		pause_faite,t_fin
 								jnb	tf1,t_fin
+								lcall	t_regler_50ms
 								djnz	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer,	t_fin
 								mov 	var_etat,#5
-								sjmp	t_timer_start_pause
+								ljmp	t_timer_start_pause
                                        
-t_timer_start_attente:	mov	th1,#t50us_h
-								mov	tl1,#t50us_l
+t_timer_start_attente:	lcall	t_regler_50ms
 								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #2
-								setb	tr1
-								sjmp	t_fin
+								ljmp	t_fin
 
-t_timer_start_pause:		mov	th1,#t50us_h
-								mov	tl1,#t50us_l
+t_timer_start_pause:		lcall	t_regler_50ms
 								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #40
-								setb	tr1
-								sjmp	t_fin
-
-
+								ljmp	t_fin
 								
-																							
+t_fin:						ret
+								
+t_regler_50ms:				mov	th1,#t50us_h
+								mov	tl1,#t50us_l
+								clr	tf1
+								setb	tr1
+								ret
+								
+init_bits_choix_etat:	clr	prec_g
+								clr	prec_m
+								clr	pause_faite
+								ret							
 								end
+
