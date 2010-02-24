@@ -65,12 +65,14 @@ mot_ref_low					equ	0fah
 mot_ref_high				equ	24h
 mot_ref_rest_low			equ	0c1h
 mot_ref_rest_high			equ	80h
-temp							equ	2fh
+temp							equ	0fh
 lim_bas						equ	10
 lim_haut						equ	245
 temp_mot						equ	20
 t50us_h						equ   3Ch
 t50us_l						equ   0AFh
+vitesse						equ	160
+vitesse2						equ	165
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -303,7 +305,7 @@ chargement_fin:			ret
 agir:							mov	a,var_etat
 								cjne	a,#0,etat1
 etat0_1:						mov	R2,#128
-								mov	R3,#150													;Activation du moteur
+								mov	R3,#vitesse2													;Activation du moteur
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
@@ -329,7 +331,7 @@ etat0_1:						mov	R2,#128
 ;		tempo++;
 ;	}
 etat1:						cjne	a,#1,etat2
-etat1_0_1:					mov	R3,#150													;Activation du moteur
+etat1_0_1:					mov	R3,#vitesse													;Activation du moteur
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#129
@@ -352,7 +354,7 @@ etat2:						cjne	a,#2,etat3
 								sjmp	etat1_0_1
 								
 etat3:						cjne	a,#3,etat4
-etat3_0_1:					mov	R3,#150
+etat3_0_1:					mov	R3,#vitesse
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#127
