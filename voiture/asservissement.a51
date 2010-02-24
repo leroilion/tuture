@@ -71,8 +71,8 @@ lim_haut						equ	245
 temp_mot						equ	20
 t50us_h						equ   3Ch
 t50us_l						equ   0AFh
-vitesse						equ	160
-vitesse2						equ	160
+vitesse						equ	180
+vitesse2						equ	180
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
