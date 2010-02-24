@@ -72,7 +72,7 @@ temp_mot						equ	20
 t50us_h						equ   3Ch
 t50us_l						equ   0AFh
 vitesse						equ	160
-vitesse2						equ	165
+vitesse2						equ	160
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -219,7 +219,7 @@ conv_pourcent_nb:			mov	a,R2
 								mov	r4,a
 								mov	r5,b
 								mov	a,r3
-								mov	b,#4
+								mov	b,#2
 								mul	ab
 								mov	r6,a
 								mov	r7,b
@@ -269,7 +269,7 @@ chargement:					jb		mutex,chargement_fin
 								mov	a,#0dch
 								add	a,r6
 								mov	6dh,a
-								mov	a,#03h
+								mov	a,#04h
 								addc	a,r7
 								mov	6ch,a
 								clr	c

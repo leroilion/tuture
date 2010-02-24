@@ -644,7 +644,7 @@ Type=0
 Tool Ref=MA51
 Format Ref=
 Nb Dep=0
-Info Code=330
+Info Code=371
 Info Const=0
 Info XData=0
 Info PData=0
@@ -663,7 +663,9 @@ PostLinker Ref=
 
 
 [Desktop Files]
-Nb Desktop Files=0
+Nb Desktop Files=1
+f:\svn\tuture\voiture\asservissement.a51 (2147483647,2147483647-2147483647,2147483647) 414
+
 
 [Closed Files]
 Nb Closed Files=0
@@ -688,7 +690,7 @@ Nb Dim Views=13
 Debug=
 
 [Project Rect]
-(0,0-0,0)
+(2147483647,2147483647-2147483647,2147483647)
 
 [LastSel]
 LastAOF=f:\svn\tuture\voiture\asservissement.aof
