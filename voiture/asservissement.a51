@@ -17,8 +17,8 @@
 moteur						bit	p1.5
 direction					bit	p1.4
 led							bit	p1.0
-bpdroit						bit	p1.1
-bpgauche						bit	p1.2
+bpv							bit	p1.1
+bpr							bit	p1.2
 capteur_droit				bit	p3.3														;Sur interruption INT0
 capteur_gauche				bit	p3.2              									;Sur interruption INT1
 esclave						bit	p1.6
@@ -44,6 +44,8 @@ le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	7
 var_etat_2					equ	75h
 vitesse						equ	74h
 vitesse2						equ	73h
+attendre_1					equ	72h
+attendre_2					equ	71h
 
 pause_faite					bit	7eh
 prec_g						bit   7dh
@@ -135,6 +137,9 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								mov 	th0,#0ffh												;On le lance proche de la fin pour que le cycle asservissement commence
 								mov 	tl0,#0f0h                                    ;le plus rapidement possible
 								setb 	tr0
+								
+								mov	vitesse,#160
+								mov	vitesse2,#165
 								
 ;Saut au debut du main :								
 								ljmp	main
@@ -311,7 +316,7 @@ chargement_fin:			ret
 agir:							mov	a,var_etat_2
 								cjne	a,#0,etat1
 etat0_1:						mov	R2,#128
-								mov	R3,#vitesse2													;Activation du moteur
+								mov	R3,vitesse2													;Activation du moteur
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
@@ -337,7 +342,7 @@ etat0_1:						mov	R2,#128
 ;		tempo++;
 ;	}
 etat1:						cjne	a,#1,etat2
-etat1_0_1:					mov	R3,#vitesse													;Activation du moteur
+etat1_0_1:					mov	R3,vitesse													;Activation du moteur
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#129
@@ -360,7 +365,7 @@ etat2:						cjne	a,#2,etat3
 								sjmp	etat1_0_1
 								
 etat3:						cjne	a,#3,etat4
-etat3_0_1:					mov	R3,#vitesse
+etat3_0_1:					mov	R3,vitesse
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#127
@@ -489,7 +494,7 @@ reglage_plus:				inc	vitesse
 reglage_moins:				dec	vitesse
 reglage_fin:				mov	a,vitesse
 								add	a,#05h
-								mov	vitesse_2,a
+								mov	vitesse2,a
 								mov	attendre_1,#0ffh
 								mov	attendre_2,#0ffh
 reglage_fin_2:				mov	a,attendre_1
