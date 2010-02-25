@@ -40,7 +40,6 @@ mot_rest_high				equ	78h
 var_etat						equ	77h
 tempo							equ	76h
 le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	75h
-ahahah						equ	75h
 
 pause_faite					bit	7eh
 prec_g						bit   7dh
@@ -66,15 +65,14 @@ mot_ref_low					equ	0fah
 mot_ref_high				equ	24h
 mot_ref_rest_low			equ	0c1h
 mot_ref_rest_high			equ	80h
-temp							equ	25h
+temp							equ	3fh
 lim_bas						equ	10
 lim_haut						equ	245
 temp_mot						equ	20
 t50us_h						equ   3Ch
 t50us_l						equ   0AFh
-vitesse						equ	183
-vitesse2						equ	190
-ahah							equ	20
+vitesse						equ	165
+vitesse2						equ	170
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -306,34 +304,8 @@ chargement_fin:			ret
 ;*************************************************************************************
 agir:							mov	a,var_etat
 								cjne	a,#0,etat1
-								
-;	If( ahahah == 0 )
-;	{
-;		r2 = 128;
-;	}
-;	else
-;	{
-;		if( r2 < 128 )
-;			r2++;
-;		else
-;			r2--;
-;		ahahah--;
-;	}
-etat0_1:						;mov	R2,#128
-								;mov	R3,#vitesse2													;Activation du moteur
-								mov	a,ahahah
-								jnz	etat0_2
-								mov	r2,#128
-								ret
-etat0_2:						clr	c
-								mov	a,R2
-								subb	a,#129
-								jnc	etat0_3
-								inc	r2
-								dec	ahahah
-								ret
-etat0_3:						dec	r2
-								dec	ahahah
+etat0_1:						mov	R2,#128
+								mov	R3,#vitesse2													;Activation du moteur
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
@@ -360,7 +332,6 @@ etat0_3:						dec	r2
 ;	}
 etat1:						cjne	a,#1,etat2
 etat1_0_1:					mov	R3,#vitesse													;Activation du moteur
-								mov	ahahah,#ahah
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#129
@@ -384,7 +355,6 @@ etat2:						cjne	a,#2,etat3
 								
 etat3:						cjne	a,#3,etat4
 etat3_0_1:					mov	R3,#vitesse
-								mov	ahahah,#ahah
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#127
@@ -477,7 +447,7 @@ t_bbmb:						;dernier cas aussi
 								ljmp	t_timer_start_pause
                                        
 t_timer_start_attente:	lcall	t_regler_50ms
-								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #5
+								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #10
 								ljmp	t_fin
 
 t_timer_start_pause:		lcall	t_regler_50ms
