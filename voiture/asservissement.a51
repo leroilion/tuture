@@ -307,8 +307,8 @@ agir:							mov	a,var_etat
 								cjne	a,#0,etat1
 etat0_1:						;mov	R2,#128
 								;mov	R3,#vitesse2													;Activation du moteur
-								jb		droite_ou_gauche,etat1
-								ljmp 	etat3
+								jb		droite_ou_gauche,etat3
+								ljmp 	etat1
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
