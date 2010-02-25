@@ -1,19 +1,22 @@
-					org	0h
+					org	0h 
 					ljmp	Debut
 					org	30h					
 
 LCD_RS			bit	P0.5
 LCD_RW			bit	P0.6
 LCD_E				bit	P0.7
+comMaitre		bit	p3.1
 
 TG					bit	7fh
 TC             bit	7eh
 TD					bit	7dh
+flag				bit	7ch
+Dix				bit	7bh
 
 							;0123456789ABCDEF0123456789ABCDEF01234567
 MsgI:				db		'  ISE  EXPRESS  '
 					db		0
-MsgR:				db		'    RECEPTION   '
+MsgF:				db		'**Nouveau Tour**'
 					db		0
 Msg4:				db		'   PAS DE TIR   '
 					db		0
@@ -23,7 +26,9 @@ MsgC:				db		'  TIR AU CENTRE '
 					db		0
 MsgG:				db		'  TIR A GAUCHE  '
 					db		0
-MsgT:				db		'Pts '
+MsgT:				db		'Points:'
+					db		0
+MsgFin:			db		'FIN'
 					db		0
 					;mov	P1,#data
 en_lcd_code:	clr	LCD_RS
@@ -62,14 +67,14 @@ attendre_40ms: anl	TMOD,#0F0h
 					clr	TR0
 					clr	TF0
 					
+					anl	TMOD,#0F0h			
 					orl	TMOD,#20h
 									
 					mov	TH1,#0E6h
 					mov	TL1,#0E6h
 					setb	TR1
-					ret
-
-attendre_200ms:mov 	R7,#5
+					ret 
+attendre_3s:	mov 	R7,#75
 					sjmp  boucle_R7
 					
 boucle_R7:		lcall	attendre_40ms
@@ -96,92 +101,67 @@ dec_droite:		mov	P2,#1Dh
 					lcall en_lcd_code
 					ret	
 					
-init:				lcall	attendre_40ms
-					clr	P1.3
+init:				clr	P1.3
 					clr	P1.2
-					mov	SCON,#01010000b	;partie reception				
-					
-					mov	R1,#30h
+					clr	Dix
+					clr	flag 					
+					lcall	attendre_40ms					
+					mov	SCON,#01010000b	;partie reception									
+					mov	R1,#30h				;initialisation du compteur de points
 					mov	R2,#30h
-					
 					mov	P2,#14h				;curseur vers droite
 					lcall	en_lcd_code
 					mov	P2,#0Ch				;allumer ecran
 					lcall	en_lcd_code
 					mov	P2,#38h				;mode 2 lignes
 					lcall	en_lcd_code
-					
 					ret
 
 
-Total:			;mov	P2,#0Ch				;allumer ecran
-					;lcall	en_lcd_code
-					lcall	ligne_2					
+Total:			lcall	ligne_2					
 					mov	dptr,#MsgT
-					;lcall	en_lcd_data
 					lcall	env_chn
-					mov	P2,R1
+					
+					mov	A,R1					
+					subb	A,#3Ah
+					jc		Points
+					
+					setb	Dix
+					
+					add	A,#30h
+					mov	R1,A					
+					
+Points:			jnb	Dix,Chiffre
+					mov	P2,#31h
 					lcall	en_lcd_data
 					lcall	env_chn
 					
+Chiffre:			mov	P2,R1
+					lcall	en_lcd_data
+					lcall	env_chn
+					
+					mov	P2,#20h
+					lcall	en_lcd_data
+					lcall	env_chn
+					
+					cjne	R2,#34h,Laps
+					mov	dptr,#MsgFin
+					lcall env_chn
+					sjmp	Fin
+					
+Laps:				mov	P2,R2
+					lcall	en_lcd_data
+					lcall	env_chn
 					mov	P2,#2fh
 					lcall	en_lcd_data
 					lcall	env_chn
-					
-					push	acc
-					mov	a,#00h
-					mov	b,#2
-					jnb	TG,m1
-					inc	a
-m1:				mul	ab
-					jnb	TC,m2
-					inc	a
-m2:				mul	ab
-					jnb	TD,m3
-					inc	a
-m3:				anl	a,#00000111b
-					;jz		Fina
-					
-					mov	P2,#47h
-					lcall	en_lcd_data
-					lcall	env_chn
-					mov	b,#30h
-					jnb	ACC.2,affg
-					inc	b
-affg:				mov	P2,b
+					mov	P2,#33h
 					lcall	en_lcd_data
 					lcall	env_chn
 					
-					mov	P2,#43h
-					lcall	en_lcd_data
-					lcall	env_chn
-					mov	b,#30h
-					jnb	ACC.1,affc
-					inc	b
-affc:				mov	P2,b
-					lcall	en_lcd_data
-					lcall	env_chn					
-					
-					mov	P2,#44h
-					lcall	en_lcd_data
-					lcall	env_chn
-					mov	b,#30h
-					jnb	ACC.0,affd
-					inc	b
-affd:				mov	P2,b
-					lcall	en_lcd_data
-					lcall	env_chn					  
+					ret
 
-Fina:				mov	P2,#2fh
-					lcall	en_lcd_data
-					lcall	env_chn
-					mov	P2,R2
-					lcall	en_lcd_data
-					lcall	env_chn
-					pop	acc
-										
-					ret	
-						
+					
 Env_chn:			clr	a
 					movc	a,@a+dptr
 					jz		Fin
@@ -190,81 +170,103 @@ Env_chn:			clr	a
 					lcall inc_curseur
 					inc	dptr
 					sjmp	Env_chn
-
+					
 Fin:				ret
+
+
+;***************************************************************
+;******************debut du programme***************************
+;***************************************************************
+
 
 Debut:			lcall	init
 
-Loop:				lcall	attendre_40ms
-					clr	p1.3		;arreter la sirene
+					
+					
+					
+Loop:				clr	p1.3		;arreter la sirene
 					clr	p1.2		;eteindre le laser
-					clr	TG
-					clr	TC
-					clr	TD
-					inc	R2
-					lcall effacer
+					
+					clr	TG			;flag de tir
+					clr	TC       ;flag de tir
+					clr	TD       ;flag de tir
+					clr	flag
+				   lcall effacer
 					mov	dptr,#MsgI
-					;lcall	en_lcd_data
 					lcall env_chn
 					lcall	Total
 										
 					jnb	RI,$
 					
-tir:				lcall	attendre_40ms
-					jnb	RI,Loop
-					
+balise:			jnb	RI,Loop	;attente de reception	
 					mov	A,SBUF
-					clr	ACC.7
+					clr	ACC.7					
+					lcall	ligne_1						
 					
+					cjne	A,#30h,tir					
+					lcall effacer
+					mov	dptr,#MsgF
+					jb		flag,Restart
+					inc	R2
+					setb	flag
+					clr	comMaitre
+					lcall	attendre_3s					
+										
+					cjne	R2,#34h,att
+					lcall effacer
+
+					lcall	Total											
+					sjmp	Restart
+					
+att:				setb	comMaitre
+					lcall env_chn
+					lcall	Total
+					sjmp	Restart
+
+tir:				cjne	A,#34h,tir_droite
 					setb	p1.3		;lancer la sirene
 					setb	p1.2		;tirer
-
-					clr	RI
-					lcall	ligne_1
-
-					cjne	A,#34h,tir_droite					
+					lcall ligne_1	;se placer sur la ligne 1			
 					lcall effacer
 					mov	dptr,#Msg4
-					;lcall	en_lcd_data
 					lcall env_chn
 					lcall	Total
 					sjmp	Restart
 					
 tir_droite:		cjne	A,#44h,tir_centre
+					lcall effacer
+					mov	dptr,#MsgD
+					lcall env_chn
 					jb		TD,Restart
 					setb	TD
 					inc	R1
-					lcall effacer
-					mov	dptr,#MsgD
-					;lcall	en_lcd_data
-					lcall env_chn
 					lcall	Total
 					sjmp	Restart
 					
 tir_centre:		cjne	A,#43h,tir_gauche
+					lcall effacer
+					mov	dptr,#MsgC
+					lcall env_chn
 					jb		TC,Restart
 					setb	TC
 					inc	R1
 					inc	R1
 					inc	R1
-					lcall effacer
-					mov	dptr,#MsgC
-					;lcall	en_lcd_data
-					lcall env_chn
 					lcall	Total
 					sjmp	Restart
 					
 tir_gauche:		cjne	A,#47h,Restart
+					lcall effacer
+					mov	dptr,#MsgG
+					lcall env_chn
 					jb		TG,Restart
 					setb	TG
 					inc	R1
 					lcall effacer
-					mov	dptr,#MsgG
-					;lcall	en_lcd_data
-					lcall env_chn
 					lcall	Total
 					
-Restart:			sjmp	tir
-					
+Restart:			clr	RI
+					lcall	attendre_40ms
+					ljmp	balise									
 					end
 					
