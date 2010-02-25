@@ -664,11 +664,13 @@ PostLinker Ref=
 
 [Desktop Files]
 Nb Desktop Files=1
-f:\svn\tuture\voiture\asservissement.a51 (2147483647,2147483647-2147483647,2147483647) 272
+f:\svn\tuture\voiture\asservissement.a51 (2147483647,2147483647-2147483647,2147483647) 350
 
 
 [Closed Files]
-Nb Closed Files=0
+Nb Closed Files=1
+f:\svn\tuture\voiture\asservissement.a51 (0,0-0,0) 0
+
 
 [Dim Views]
 Nb Dim Views=13

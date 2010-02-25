@@ -21,6 +21,7 @@ bpdroit						bit	p1.1
 bpgauche						bit	p1.2
 capteur_droit				bit	p3.3														;Sur interruption INT0
 capteur_gauche				bit	p3.2              									;Sur interruption INT1
+esclave						bit	p1.6
 
 ;************************************************************************
 ;* Definition des variables (octet et bit)										*
@@ -40,6 +41,7 @@ mot_rest_high				equ	78h
 var_etat						equ	77h
 tempo							equ	76h
 le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	75h
+var_etat_2					equ	75h
 
 pause_faite					bit	7eh
 prec_g						bit   7dh
@@ -141,6 +143,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 
 main:							
 								lcall	choix_etat
+								lcall	choix_etat_2
 								lcall	agir
 								lcall conv_pourcent_nb
 								lcall chargement
@@ -302,7 +305,7 @@ chargement_fin:			ret
 ;* Fonction permettant de changer la direction et la vitesse en fonction             *
 ;* de notre variable d'état                                                          *
 ;*************************************************************************************
-agir:							mov	a,var_etat
+agir:							mov	a,var_etat_2
 								cjne	a,#0,etat1
 etat0_1:						mov	R2,#128
 								mov	R3,#vitesse2													;Activation du moteur
@@ -465,5 +468,17 @@ t_regler_50ms:				mov	th1,#t50us_h
 init_bits_choix_etat:	clr	prec_g
 								clr	prec_m
 								clr	pause_faite
-								ret							
+								ret	
+								
+								
+								
+choix_etat_2:				jb		esclave,choix_etat_2_1
+								mov	var_etat_2,#5
+								ret
+choix_etat_2_1:			mov	var_etat_2,var_etat
+								ret
+
+
+
+					
 								end
