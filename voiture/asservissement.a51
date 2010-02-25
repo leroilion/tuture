@@ -17,8 +17,8 @@
 moteur						bit	p1.5
 direction					bit	p1.4
 led							bit	p1.0
-bpv							bit	p1.1
-bpr							bit	p1.2
+bpdroit						bit	p1.1
+bpgauche						bit	p1.2
 capteur_droit				bit	p3.3														;Sur interruption INT0
 capteur_gauche				bit	p3.2              									;Sur interruption INT1
 esclave						bit	p1.6
@@ -42,10 +42,6 @@ var_etat						equ	77h
 tempo							equ	76h
 le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	75h
 var_etat_2					equ	75h
-vitesse						equ	74h
-vitesse2						equ	73h
-attendre_1					equ	72h
-attendre_2					equ	71h
 
 pause_faite					bit	7eh
 prec_g						bit   7dh
@@ -77,8 +73,8 @@ lim_haut						equ	245
 temp_mot						equ	20
 t50us_h						equ   3Ch
 t50us_l						equ   0AFh
-;vitesse						equ	165
-;vitesse2						equ	170
+vitesse						equ	165
+vitesse2						equ	170
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -138,9 +134,6 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								mov 	tl0,#0f0h                                    ;le plus rapidement possible
 								setb 	tr0
 								
-								mov	vitesse,#160
-								mov	vitesse2,#165
-								
 ;Saut au debut du main :								
 								ljmp	main
 								
@@ -151,7 +144,6 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 main:							
 								lcall	choix_etat
 								lcall	choix_etat_2
-								lcall	reglage
 								lcall	agir
 								lcall conv_pourcent_nb
 								lcall chargement
@@ -316,7 +308,7 @@ chargement_fin:			ret
 agir:							mov	a,var_etat_2
 								cjne	a,#0,etat1
 etat0_1:						mov	R2,#128
-								mov	R3,vitesse2													;Activation du moteur
+								mov	R3,#vitesse2													;Activation du moteur
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
@@ -342,7 +334,7 @@ etat0_1:						mov	R2,#128
 ;		tempo++;
 ;	}
 etat1:						cjne	a,#1,etat2
-etat1_0_1:					mov	R3,vitesse													;Activation du moteur
+etat1_0_1:					mov	R3,#vitesse													;Activation du moteur
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#129
@@ -365,7 +357,7 @@ etat2:						cjne	a,#2,etat3
 								sjmp	etat1_0_1
 								
 etat3:						cjne	a,#3,etat4
-etat3_0_1:					mov	R3,vitesse
+etat3_0_1:					mov	R3,#vitesse
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#127
@@ -486,28 +478,7 @@ choix_etat_2:				jb		esclave,choix_etat_2_1
 choix_etat_2_1:			mov	var_etat_2,var_etat
 								ret
 
-reglage:						jb		bpv,reglage_plus
-								jb		bpr,reglage_moins
-								ret
-reglage_plus:				inc	vitesse
-								sjmp	reglage_fin
-reglage_moins:				dec	vitesse
-reglage_fin:				mov	a,vitesse
-								add	a,#05h
-								mov	vitesse2,a
-								mov	attendre_1,#0ffh
-								mov	attendre_2,#0ffh
-reglage_fin_2:				mov	a,attendre_1
-								jz		reglage_fin_3
-								dec	attendre_1
-								sjmp	reglage_fin_2
-reglage_fin_3:				mov	a,attendre_2
-								jz		reglage_fin_4
-								dec	attendre_2
-								nop
-								nop
-								sjmp	reglage_fin_2
-reglage_fin_4:				ret
+
 
 					
 								end
