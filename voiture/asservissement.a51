@@ -44,6 +44,7 @@ le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	7
 pause_faite					bit	7eh
 prec_g						bit   7dh
 prec_m						bit	7ch
+droite_ou_gauche			bit	7bh
 
 tim_low						equ	6eh														;Variable intermédiaire pour le timer	
 tim_high						equ	6fh
@@ -304,8 +305,10 @@ chargement_fin:			ret
 ;*************************************************************************************
 agir:							mov	a,var_etat
 								cjne	a,#0,etat1
-etat0_1:						mov	R2,#128
-								mov	R3,#vitesse2													;Activation du moteur
+etat0_1:						;mov	R2,#128
+								;mov	R3,#vitesse2													;Activation du moteur
+								jb		droite_ou_gauche,etat1
+								ljmp 	etat3
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
@@ -332,6 +335,7 @@ etat0_1:						mov	R2,#128
 ;	}
 etat1:						cjne	a,#1,etat2
 etat1_0_1:					mov	R3,#vitesse													;Activation du moteur
+								clr	droite_ou_gauche
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#129
@@ -355,6 +359,7 @@ etat2:						cjne	a,#2,etat3
 								
 etat3:						cjne	a,#3,etat4
 etat3_0_1:					mov	R3,#vitesse
+								setb	droite_ou_gauche
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#127
