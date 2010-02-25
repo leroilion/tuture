@@ -42,6 +42,8 @@ var_etat						equ	77h
 tempo							equ	76h
 le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	75h
 var_etat_2					equ	75h
+vitesse						equ	74h
+vitesse2						equ	73h
 
 pause_faite					bit	7eh
 prec_g						bit   7dh
@@ -73,8 +75,8 @@ lim_haut						equ	245
 temp_mot						equ	20
 t50us_h						equ   3Ch
 t50us_l						equ   0AFh
-vitesse						equ	165
-vitesse2						equ	170
+;vitesse						equ	165
+;vitesse2						equ	170
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -144,6 +146,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 main:							
 								lcall	choix_etat
 								lcall	choix_etat_2
+								lcall	reglage
 								lcall	agir
 								lcall conv_pourcent_nb
 								lcall chargement
@@ -478,7 +481,28 @@ choix_etat_2:				jb		esclave,choix_etat_2_1
 choix_etat_2_1:			mov	var_etat_2,var_etat
 								ret
 
-
+reglage:						jb		bpv,reglage_plus
+								jb		bpr,reglage_moins
+								ret
+reglage_plus:				inc	vitesse
+								sjmp	reglage_fin
+reglage_moins:				dec	vitesse
+reglage_fin:				mov	a,vitesse
+								add	a,#05h
+								mov	vitesse_2,a
+								mov	attendre_1,#0ffh
+								mov	attendre_2,#0ffh
+reglage_fin_2:				mov	a,attendre_1
+								jz		reglage_fin_3
+								dec	attendre_1
+								sjmp	reglage_fin_2
+reglage_fin_3:				mov	a,attendre_2
+								jz		reglage_fin_4
+								dec	attendre_2
+								nop
+								nop
+								sjmp	reglage_fin_2
+reglage_fin_4:				ret
 
 					
 								end
