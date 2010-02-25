@@ -65,14 +65,14 @@ mot_ref_low					equ	0fah
 mot_ref_high				equ	24h
 mot_ref_rest_low			equ	0c1h
 mot_ref_rest_high			equ	80h
-temp							equ	0fh
+temp							equ	3fh
 lim_bas						equ	10
 lim_haut						equ	245
 temp_mot						equ	20
 t50us_h						equ   3Ch
 t50us_l						equ   0AFh
-vitesse						equ	180
-vitesse2						equ	180
+vitesse						equ	183
+vitesse2						equ	190
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
