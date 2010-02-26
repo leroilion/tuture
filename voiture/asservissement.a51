@@ -40,8 +40,10 @@ mot_rest_low				equ	79h
 mot_rest_high				equ	78h
 var_etat						equ	77h
 tempo							equ	76h
-le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer		equ	75h
+le_truc_qu_on_decremente_pour_attendre_plus_longtemps_qu_un_tour_de_timer		equ	75h
 var_etat_2					equ	75h
+vit							equ	74h
+vit2							equ	73h
 
 pause_faite					bit	7eh
 prec_g						bit   7dh
@@ -71,10 +73,10 @@ temp							equ	3fh
 lim_bas						equ	10
 lim_haut						equ	245
 temp_mot						equ	20
-t50us_h						equ   3Ch
-t50us_l						equ   0AFh
-vitesse						equ	165
-vitesse2						equ	170
+t50ms_h						equ   3Ch
+t50ms_l						equ   0AFh
+;vitesse						equ	175
+;vitesse2						equ	175
 
 ;************************************************************************
 ;* Debut du programme : ou écrire													*
@@ -108,6 +110,10 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 								clr	mutex
 								mov	tmod,#00010001b
 								lcall	init_bits_choix_etat
+								
+								mov	vit,#170
+								mov	vit2,#175
+								
 								
 ;Activation des interruptions :								
 								setb	et0														;activation du timer 0
@@ -144,6 +150,7 @@ init:							mov	sp,#30h													;On change le StackPointer de place pour ne 
 main:							
 								lcall	choix_etat
 								lcall	choix_etat_2
+								lcall reglage_btn
 								lcall	agir
 								lcall conv_pourcent_nb
 								lcall chargement
@@ -308,7 +315,7 @@ chargement_fin:			ret
 agir:							mov	a,var_etat_2
 								cjne	a,#0,etat1
 etat0_1:						mov	R2,#128
-								mov	R3,#vitesse2													;Activation du moteur
+								mov	R3,vit2													;Activation du moteur
 								ret
 								
 ; Si la variable d'état vaut 1, on fait:
@@ -334,7 +341,7 @@ etat0_1:						mov	R2,#128
 ;		tempo++;
 ;	}
 etat1:						cjne	a,#1,etat2
-etat1_0_1:					mov	R3,#vitesse													;Activation du moteur
+etat1_0_1:					mov	R3,vit													;Activation du moteur
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#129
@@ -357,7 +364,7 @@ etat2:						cjne	a,#2,etat3
 								sjmp	etat1_0_1
 								
 etat3:						cjne	a,#3,etat4
-etat3_0_1:					mov	R3,#vitesse
+etat3_0_1:					mov	R3,vit
 								clr 	c															;On verifie si le registre R2 est bien dans la bonne section
 								mov	a,R2
 								subb	a,#127
@@ -385,7 +392,7 @@ etat5:						cjne	a,#5,etat6
 etat6:						ljmp	etat0_1
 		
 ;******************************************************************************
-; Foction de Tomk                                                             *
+; Fonction de TomK                                                            *
 ;******************************************************************************
 
 choix_etat:					mov	A,P3
@@ -426,7 +433,7 @@ t_bbg:						cjne	A,#3,t_prec
 t_prec:						cjne	A,#5,t_bbmb
 								jnb	tf1,t_fin
 								lcall	t_regler_50ms
-								djnz	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer,	t_fin
+								djnz	le_truc_qu_on_decremente_pour_attendre_plus_longtemps_qu_un_tour_de_timer,	t_fin
 								setb	pause_faite
 								clr	tr1
 								jnb	prec_m,t_pg
@@ -445,22 +452,22 @@ t_bbmb:						;dernier cas aussi
 								jb		pause_faite,t_fin
 								jnb	tf1,t_fin
 								lcall	t_regler_50ms
-								djnz	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer,	t_fin
+								djnz	le_truc_qu_on_decremente_pour_attendre_plus_longtemps_qu_un_tour_de_timer,	t_fin
 								mov 	var_etat,#5
 								ljmp	t_timer_start_pause
                                        
 t_timer_start_attente:	lcall	t_regler_50ms
-								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #10
+								mov	le_truc_qu_on_decremente_pour_attendre_plus_longtemps_qu_un_tour_de_timer, #10
 								ljmp	t_fin
 
 t_timer_start_pause:		lcall	t_regler_50ms
-								mov	le_truc_qu_on_decremente_pour_attentre_plus_longtemps_qu_un_tour_de_timer, #40
+								mov	le_truc_qu_on_decremente_pour_attendre_plus_longtemps_qu_un_tour_de_timer, #40
 								ljmp	t_fin
 								
 t_fin:						ret
 								
-t_regler_50ms:				mov	th1,#t50us_h
-								mov	tl1,#t50us_l
+t_regler_50ms:				mov	th1,#t50ms_h
+								mov	tl1,#t50ms_l
 								clr	tf1
 								setb	tr1
 								ret
@@ -478,7 +485,20 @@ choix_etat_2:				jb		esclave,choix_etat_2_1
 choix_etat_2_1:			mov	var_etat_2,var_etat
 								ret
 
-
-
+reglage_btn:				jb 	bpdroit,rb_2
+								jnb	bpdroit, $
+								dec 	vit
+								mov   a, vit
+								add	a,#5
+								mov	vit2, a
+								
+rb_2:							jb 	bpgauche,rb_fin
+								jnb	bpgauche, $
+								inc 	vit
+								mov   a, vit
+								add	a,#5
+								mov	vit2, a	
+								
+rb_fin:						ret
 					
 								end
