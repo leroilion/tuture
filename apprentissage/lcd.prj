@@ -1,7 +1,7 @@
 RIDE Project File
 File Version=3
 [BN]
-Build=BN761-51
+Build=BN754-51
 [Ref]
 Ref=0
 [Type]
@@ -67,7 +67,7 @@ End Options Directories
 Number=1
 
 Name=80C51
-DllName=..\..\RIDE\BIN\target51.dll
+DllName=..\..\..\..\RIDE\BIN\target51.dll
 Begin Group 80C51
 MicroName=AT89C51
 VonNeumann=0
@@ -88,7 +88,7 @@ Nb Nets=0
 [Tools]
 Number=13
 
-Path=..\..\RIDE\BIN\ccomp51.dll
+Path=..\..\..\..\RIDE\BIN\ccomp51.dll
 Name=CodeCompressor51
 SrcExt=
 ObjExt=
@@ -137,7 +137,7 @@ ModeAuto=1
 End Group General
 End Options CodeCompressor51
 
-Path=..\..\RIDE\BIN\lx51v32.dll
+Path=..\..\..\..\RIDE\BIN\lx51v32.dll
 Name=LX51
 SrcExt=*.obj
 ObjExt=*.aof
@@ -254,7 +254,7 @@ LKLIB=1
 End Group Linker
 End Options LX51
 
-Path=..\..\RIDE\BIN\ma51v32.dll
+Path=..\..\..\..\RIDE\BIN\ma51v32.dll
 Name=MA51
 SrcExt=*.a51;*.x51;*.inc;*.src
 ObjExt=*.obj
@@ -295,7 +295,7 @@ Mod51=1
 End Group Source
 End Options MA51
 
-Path=..\..\RIDE\BIN\mamxv32.dll
+Path=..\..\..\..\RIDE\BIN\mamxv32.dll
 Name=MAMX
 SrcExt=*.a51;*.inc
 ObjExt=*.obj
@@ -336,7 +336,7 @@ Mod51=0
 End Group Source
 End Options MAMX
 
-Path=..\..\RIDE\BIN\rc51v32.dll
+Path=..\..\..\..\RIDE\BIN\rc51v32.dll
 Name=RC51
 SrcExt=*.c;*.h
 ObjExt=*.obj
@@ -435,7 +435,7 @@ Ansi=0
 End Group Source
 End Options RC51
 
-Path=..\..\RIDE\BIN\rcmxv32.dll
+Path=..\..\..\..\RIDE\BIN\rcmxv32.dll
 Name=RCMX
 SrcExt=*.c;*.h
 ObjExt=*.obj
@@ -510,7 +510,7 @@ Ansi=0
 End Group Source
 End Options RCMX
 
-Path=..\..\RIDE\BIN\lxmxv32.dll
+Path=..\..\..\..\RIDE\BIN\lxmxv32.dll
 Name=RLMX
 SrcExt=*.obj
 ObjExt=*.aof
@@ -574,7 +574,7 @@ IsPrompt=0
 End Group Options
 End Options MSC1210_LOADER
 
-Path=..\..\RIDE\BIN\OROM.exe
+Path=..\..\..\..\RIDE\BIN\OROM.exe
 Name=OROM
 SrcExt=*.aof
 ObjExt=*.*
@@ -588,7 +588,7 @@ IsPrompt=0
 End Group Options
 End Options OROM
 
-Path=..\..\RIDE\BIN\lib51v32.dll
+Path=..\..\..\..\RIDE\BIN\lib51v32.dll
 Name=LIBMAN51
 SrcExt=
 ObjExt=
@@ -596,7 +596,7 @@ Target Translate=0
 Begin Options LIBMAN51
 End Options LIBMAN51
 
-Path=..\..\RIDE\BIN\libxav32.dll
+Path=..\..\..\..\RIDE\BIN\libxav32.dll
 Name=LIBMANMX
 SrcExt=
 ObjExt=
@@ -604,7 +604,7 @@ Target Translate=0
 Begin Options LIBMANMX
 End Options LIBMANMX
 
-Path=..\..\RIDE\BIN\oh16v32.dll
+Path=..\..\..\..\RIDE\BIN\oh16v32.dll
 Name=OH16
 SrcExt=*.aof
 ObjExt=*.hex
@@ -612,7 +612,7 @@ Target Translate=0
 Begin Options OH16
 End Options OH16
 
-Path=..\..\RIDE\BIN\oh51v32.dll
+Path=..\..\..\..\RIDE\BIN\oh51v32.dll
 Name=OH51
 SrcExt=*.aof
 ObjExt=*.hex
@@ -667,7 +667,7 @@ PostLinker Ref=
 
 [Desktop Files]
 Nb Desktop Files=1
-c:\tp\mobile\lcd.a51 (2147483647,2147483647-2147483647,2147483647) 65
+c:\tp\mobile\lcd.a51 (2147483647,2147483647-2147483647,2147483647) 8
 
 
 [Closed Files]
@@ -698,5 +698,5 @@ Debug=
 (2147483647,2147483647-2147483647,2147483647)
 
 [LastSel]
-LastAOF=c:\tp\mobile\lcd.aof
+LastAOF=c:\tp\mobile\svn\apprentissage\lcd.aof
 
