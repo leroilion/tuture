@@ -1,0 +1,759 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass scrreprt
+\use_default_options false
+\language french
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 0
+\use_esint 0
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Rapport de P1
+\begin_inset Newline newline
+\end_inset
+
+Voiture autoguidée
+\end_layout
+
+\begin_layout Author
+Amine
+\begin_inset Newline newline
+\end_inset
+
+Victor
+\begin_inset Newline newline
+\end_inset
+
+Thomas
+\begin_inset Newline newline
+\end_inset
+
+Jérémy
+\end_layout
+
+\begin_layout Date
+Du xx au 26 février
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/blanc.png
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Professeurs:
+\begin_inset Newline newline
+\end_inset
+
+Alain Lebegue et François Delavault
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/blanc.png
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename image/logoTSP.jpg
+	scale 16
+
+\end_inset
+
+Année 2010
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter*
+Introduction
+\end_layout
+
+\begin_layout Part
+La voiture
+\end_layout
+
+\begin_layout Chapter
+La mécanique
+\end_layout
+
+\begin_layout Section
+La propulsion
+\end_layout
+
+\begin_layout Standard
+La propulsion est faite au moyen d'un moteur à courant continue commander
+ par un variateur.
+ La transmission de la sortie du moteur vers les roue se fait au moyen d'un
+ réducteur différentiel.
+ Le moteur est commander par un variateur que nous devons commander.
+ Le variateur s'occupe de la gestion des largeurs d'impulsions envoyée au
+ moteur par l'intermédiaire d'un pont en H.
+\end_layout
+
+\begin_layout Standard
+Pour faire avancer la voiture, nous aurons à controler ce variateur par
+ l'intermédiaire d'un signal périodique.
+ Pour que la voiture soit à l'arrêt (point mort), il faut envoyer un signal
+ périodique de 50Hz avec un rapport cyclique de 7.5%.
+ La voiture a tendance à freiner lorsque le rapport cyclique du signal vaut
+ 5%.
+ En revanche, vu la puissance des moteur, nous avons bridé logiciellement
+ la propulsion avec un signal d'au maximum 10%.
+ En effet, avec un rapport cyclique plus élevé, la voiture va trop vite
+ (elle peut atteindre les 50km/h) et dans cette situation, celle-ci ne peut
+ plus suivre la ligne.
+\end_layout
+
+\begin_layout Section
+La direction
+\end_layout
+
+\begin_layout Standard
+Pour contrôler la direction de la voiture, nous utilisons un servo-moteur.
+ Pour contrôler le servo-moteur, nous utilisons la même méthode que pour
+ le variateur de puissance.
+ Il s'agit d'un signal périodique avec un rapport cyclique variable
+\begin_inset space \thinspace{}
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+5%, Braque complétement à gauche
+\end_layout
+
+\begin_layout Itemize
+7.5%, Nous allons tout droit
+\end_layout
+
+\begin_layout Itemize
+10%, Braque de l'autre côté.
+\end_layout
+
+\begin_layout Chapter
+L'électronique
+\end_layout
+
+\begin_layout Section
+Carte maitre
+\end_layout
+
+\begin_layout Standard
+La carte maitre est une carte contenant un AT89C2051
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Microcontrôleur de 20 broches et E/S de chez ATMEL
+\end_layout
+
+\end_inset
+
+.
+ Ce microcontrôoleur de 20 broches est celui que nous utilisons pour déplacer
+ la voiture.
+ En effet, c'est lui qui va contrôler la propulsion de la voiture, ainsi
+ que la direction.
+\end_layout
+
+\begin_layout Standard
+Pour ce faire, cette carte est relié à la carte de détection de ligne, au
+ servo-moteur de direction et variateur de puissance, ainsi que la carte
+ esclave que nous verrons juste après.
+ Cette dernière connexion permet au 2 cartes de communiquer entre elles.
+ Enfin, il y a 2 boutons poussoirs, ainsi qu'une diode LED qui servent pour
+ le débuguage.
+\end_layout
+
+\begin_layout Section
+Carte esclave
+\end_layout
+
+\begin_layout Standard
+La carte esclave contient un AT89C51
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Microcontrôleur 40 broches de chez ATMEL
+\end_layout
+
+\end_inset
+
+.
+ Son rôle est de détecter la balise, et de tirer dessus à l'aide d'un laser,
+ ainsi que d'afficher le score sur l'écran LCD et activer la sirène lors
+ du tir LASER.
+ Il est donc connecté au récepteur de la balise (entrée RX de la liaison
+ série), au LASER, à l'écran LCD par l'intermédiaire d'une nappe de 12 fils
+ et la sirène.
+ Il a en plus un fil qui lui permet de communiquer avec le microcontrôleur
+ maitre.
+\end_layout
+
+\begin_layout Section
+Détection de ligne au sol
+\end_layout
+
+\begin_layout Standard
+la détection de la ligne au sol
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+la ligne est constituée d'une bande noir de 4cm entourée de chaque côté
+ par une bande blanche de 4cm
+\end_layout
+
+\end_inset
+
+ se fait par l'intermédiaire de 2 capteurs infrarouge
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+émetteur IR modulé à f = 7kHz (diode IR) et un récepteur délivrant un signal
+ tout ou rien (0V ou 5V) 
+\end_layout
+
+\end_inset
+
+.
+ Ces 2 capteurs sont placés sur le bouclier avant (un placé à gauche l’autre
+ à droite).
+\end_layout
+
+\begin_layout Standard
+Pour avoir une meilleure précision et trajectiore, nous avons déplacés ces
+ 2 capteurs de manière à les rapprocher l'un de l'autre.
+ Ainsi, lorsque nous nous trouvons en ligne droite, les 2 capteurs nous
+ indiquent la couleur noir.
+\end_layout
+
+\begin_layout Section
+Détection de la balise
+\end_layout
+
+\begin_layout Standard
+Cette cible « intelligente » émet un faisceau IR modulé à 38 kHz par un
+ signal numérique à 1200 Bauds, répété toutes les 20 ms, correspondant au
+ code ASCII des chiffres ou des caractères du message à transmettre auquel
+ est ajouté le bit de parité de l’octet initial en bit de poids fort.
+\end_layout
+
+\begin_layout Standard
+Ce message est détecté par le récepteur embarqué (TSOP 1738) qui restitue
+ le code ASCII initial avec le bit de parité.
+ La cible envoie les codes suivants :
+\end_layout
+
+\begin_layout Itemize
+« 4 » en l’absence d’impact laser, code ASCII : 34h + bit de parité
+\end_layout
+
+\begin_layout Itemize
+« D » pour tir à droite (1 point), code ASCII : 44h + bit de parité
+\end_layout
+
+\begin_layout Itemize
+« C » pour tir au centre (3 points) , code ASCII : 43h + bit de parité
+\end_layout
+
+\begin_layout Itemize
+« G » pour tir à gauche(1 point), code ASCII : 47h + bit de parité.
+ 
+\end_layout
+
+\begin_layout Section
+Tir sur balise
+\end_layout
+
+\begin_layout Standard
+Le tir sur la balise se fait à l'aide d'un LASER Infra Rouge (IR) modulé
+ à Flaser = 5 kHz.
+ Cette modulation se fait au moyen d'un LM555
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Oscillateur astable
+\end_layout
+
+\end_inset
+
+.
+ Pour activer ou désactiver le LASER, nous controlons le /RST du 555.
+\end_layout
+
+\begin_layout Section
+L'écran LCD
+\end_layout
+
+\begin_layout Standard
+L'écran LCD est un écran LCD de chez .
+ Il s'agit d'un écran alphanumérique 2*16 caractères.
+\end_layout
+
+\begin_layout Part
+L'asservissement
+\end_layout
+
+\begin_layout Chapter
+Une structure en couche d'abstraction
+\end_layout
+
+\begin_layout Standard
+Pour faire l'asservissement, nous avons fait le choix d'appliquer un système
+ en couches d'abstraction.
+ Cela nous permet de travailler sur une partie sans en modifier l'autre.
+\end_layout
+
+\begin_layout Standard
+Nous avons donc défini 4 couches d'abstraction
+\begin_inset space \thinspace{}
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+La couche physique (qui créer le signal périodique de contrôle de la propulsion
+ et de la direction).
+\end_layout
+
+\begin_layout Itemize
+Une variable de contrôle qui nous permet de contrôler la propulsion et la
+ direction sans se soucier des limites car on indique un pourcentage de
+ puissance.
+\end_layout
+
+\begin_layout Itemize
+La variable d'état basse.
+ Cette variable recopie la variable d'état si nous ne sommes pas dans la
+ zone d'arrivé.
+\end_layout
+
+\begin_layout Itemize
+La variable d'état.
+ Nous avons appliqué une machine à état qui nous permet de définir l'état
+ de fonctionnement de la voiture.
+ C'est ce que représente cette variable.
+\end_layout
+
+\begin_layout Section
+La couche 1 : La couche physique
+\end_layout
+
+\begin_layout Standard
+C'est cette couche qui génère le signal périodique qui contrôle le variateur
+ de puissance et le servo-moteur de direction.
+ Pour cela, nous utilisons le timer0 et son interruption.
+\end_layout
+
+\begin_layout Subsection
+Création des signaux
+\end_layout
+
+\begin_layout Standard
+Pour générer les 2 signaux, nous utilisons un seul timer.
+ Dans un premier temps, nous chargeons dedans la valeur correspondant à
+ la durée où le bit correspondant au servo-moteur doit être mis à un (D
+ sur la figure).
+\end_layout
+
+\begin_layout Standard
+Ensuite, après avoir mis le bit en question à 0, nous chargeons dans le
+ timer un temps d'attente (/D) de manière à ce que le temps précédent et
+ celui fasse exactement 2.5ms.
+\end_layout
+
+\begin_layout Standard
+A partir de ce moment, nous passons à 1 le bit de contrôle du variateur
+ de puissance tout en rechargeant le timer avec le temps nécessaire (M).
+\end_layout
+
+\begin_layout Standard
+Enfin, nous mettons à 0 le bit de contrôle du moteur, et rechargeons le
+ timer avec un dernier temps (/M) d'attente de manière à ce que les 4 phases
+ aient une durée de 20ms.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename image/timer0_total.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Contrôle du timer 0 pour la propulsion et la direction
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Verifier la disponibilité du mutex
+\end_layout
+
+\begin_layout Standard
+Pour éviter de modifier les variables que nous rechargeons dans le timer
+ (pour générer les signaux) en cours de cycle, nous avons instauré un mutex.
+\end_layout
+
+\begin_layout Standard
+Pendant les 3 première phase de rechargement du timer, il ne faut pas modifier
+ les valeurs à charger dans le timer.
+ En effet, si pendant l'attente de la phase 1, nous modifions la phase 2
+ (qui ne correspond donc plus à l'attente que nous venons d'effectuer),
+ cela fait que les 2 premières phases de ferront plus 2.5ms comme nous voulons,
+ mais peut-être plus ou peut-être moins.
+ Ainsi, notre signal n'est plus périodique à une fréquence de 50Hz.
+ Et cela peut avoir pour conséquence un emballement de la voiture dans le
+ pire des cas, ou une mauvaise gestion de la vitesse et de la direction
+ dans le meilleure de cas.
+\end_layout
+
+\begin_layout Standard
+Ainsi, lors de la première phase de rechargement du timer, nous prenons
+ le mutex.
+ A partir de ce moment, il deviens impossible de modifier les temps que
+ nous avons calculé.
+ Lors du début de la phase 4, nous pouvons modifier les temps d'attente
+ puisque la dernière valeur d'un cycle vient d'être chargé dans le timer.
+ Donc, nous rendons le mutex disponible.
+\end_layout
+
+\begin_layout Subsection
+Lire la couche supérieur
+\end_layout
+
+\begin_layout Standard
+Si le mutex est disponible, nous interrogeons la couche supérieur pour savoir
+ quelle est la valeur à recharger dans le timer.
+ C'est étape permet calcul, en fonction du temps, la valeur à recharger
+ dans le timer (65536-le temps en micro seconde).
+\end_layout
+
+\begin_layout Section
+La couche 2 : Variable de contrôle proportionnelle
+\end_layout
+
+\begin_layout Standard
+Pour simplifier la gestion de la vitesse, nous avons décidé de contrôler
+ la vitesse de la voiture et se direction de manière proportionnelle.
+\end_layout
+
+\begin_layout Standard
+Ainsi, nous avons défini une nouvelle variable.
+ Si cette variable vaut 255 (le maximum sur 8 bits), on suppose que nous
+ avancerons à 100% de la vitesse maximum défini à l'avance.
+ Si elle vaut 0, on freine au maximum, en revanche, si elle vaut 128 (soit
+ 50% du maximum), nous sommes au point mort.
+\end_layout
+
+\begin_layout Standard
+Pour la direction, c'est la même chose
+\begin_inset space \thinspace{}
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Itemize
+0 (0%) braquer au maximum à gauche
+\end_layout
+
+\begin_layout Itemize
+128 (50%) aller tout droit
+\end_layout
+
+\begin_layout Itemize
+255 (100%) braquer au maximum à droite
+\end_layout
+
+\begin_layout Standard
+Cette étape consiste donc à lire la couche supérieur qui est cette variable
+ proportionelle, et la convertir en un temps, tout en respectant la vitesse
+ maximum à ne jamais dépasser que nous nous sommes fixé.
+\end_layout
+
+\begin_layout Section
+La couche 3 : Variable d'état basse
+\end_layout
+
+\begin_layout Standard
+Ici, nous avons une couche maitre par rapport à la couche supérieur.
+ En effet, en fonction de la couche supérieur, et de l'état du microcontrôleur
+ esclave, nous modifions les variables de contrôle proportionnelle.
+ Si le microcontrôleur esclave nous indique que nous sommes dans la zone
+ de départ, nous faisons un pose.
+ Sinon, en fonction de la machine à état, nous avançons plus ou moins vite,
+ et braquons un peu plus ou un peu moins.
+\end_layout
+
+\begin_layout Section
+La couche 4 : La machine à état
+\end_layout
+
+\begin_layout Standard
+Nous avons pris la décision de créer un machine pour diriger la voiture.
+ Nous avons ainsi plusieurs état possible comme aller tout droit, trop à
+ droite ou trop à gauche, mais aussi des état virtuel et les sortie de ligne.
+\end_layout
+
+\begin_layout Chapter
+Un programme séquentiel
+\end_layout
+
+\begin_layout Part
+Tir sur la cible
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part
+Annexe
+\end_layout
+
+\begin_layout Chapter
+Règlement
+\end_layout
+
+\begin_layout Standard
+Le mobile autopropulsé doit se déplacer en suivant une piste à partir d’une
+ ligne de départ.
+ Il doit détecter sa position par rapport à la piste grâce à 2 capteurs
+ infrarouge ( 1 capteur = 1émetteur IR modulé à f = 7kHz (diode IR) et un
+ récepteur délivrant un signal tout ou rien (0V ou 5V)) placés sur le bouclier
+ avant (un placé à gauche l’autre à droite) et modifier si nécessaire sa
+ trajectoire.
+\begin_inset Newline newline
+\end_inset
+
+La piste est constituée dans sa longueur de trois bandes de largeur 4 cm :
+ une bande centrale noire limitée de part et d’autre de bandes blanches.
+\begin_inset Newline newline
+\end_inset
+
+La piste est globalement rectangulaire, à angles arrondis et aux cotés sinueux.
+\begin_inset Newline newline
+\end_inset
+
+La ligne de départ ( bande noire perpendiculaire à la piste) se trouve au
+ milieu du grand côté droit.
+\begin_inset Newline newline
+\end_inset
+
+Le mobile embarque un laser Infra Rouge (IR) modulé à Flaser = 5 kHz grâce
+ à un circuit Timer LM 555, et un détecteur IR (TSOP 1738) accordé sur la
+ fréquence de modulation f = 38 kHz émise par la cible distante.
+ Le déclenchement de l’émission laser est obtenu en plaçant un ‘1’ logique
+ sur la broche /RST du circuit LM555.
+\begin_inset Newline newline
+\end_inset
+
+La cible, sensible au rayonnement laser précédent, est placée en regard
+ du milieu du grand coté gauche, et à l’extérieur de la piste.
+\begin_inset Newline newline
+\end_inset
+
+ Cette cible « intelligente » émet un faisceau IR modulé à 38 kHz par un
+ signal numérique à 1200 Bauds, répété toutes les 20 ms, correspondant au
+ code ASCII des chiffres ou des caractères du message à transmettre auquel
+ est ajouté le bit de parité de l’octet initial en bit de poids fort.
+\begin_inset Newline newline
+\end_inset
+
+Ce message est détecté par le récepteur embarqué (TSOP 1738) qui restitue
+ le code ASCII initial avec le bit de parité.
+\begin_inset Newline newline
+\end_inset
+
+La cible envoie les codes suivants :
+\end_layout
+
+\begin_layout Itemize
+« 4 » en l’absence d’impact laser, code ASCII : 34h + bit de parité
+\end_layout
+
+\begin_layout Itemize
+« D » pour tir à droite (1 point), code ASCII : 44h + bit de parité
+\end_layout
+
+\begin_layout Itemize
+« C » pour tir au centre (3 points) , code ASCII : 43h + bit de parité
+\end_layout
+
+\begin_layout Itemize
+« G » pour tir à gauche(1 point), code ASCII : 47h + bit de parité.
+\end_layout
+
+\begin_layout Standard
+Un écran LCD fixé sur le mobile, doit afficher les messages qui correspondent
+ aux états définis ci dessus.
+\begin_inset Newline newline
+\end_inset
+
+Le tir au laser sur la cible ne doit être déclenché que lorsque le mobile
+ se trouve au voisinage de la cible ; un signal sonore spécifique (sirène)
+ est simultanément émis pour avertir les spectateurs.
+\begin_inset Newline newline
+\end_inset
+
+Le mobile devra accomplir au moins trois tours de piste chronométrés.
+ Le mobile MB : Il est constitué d’un châssis rigide à quatre roues.
+ Les roues avant sont directrices et actionnées par un servomoteur de direction
+ commandé par un signal rectangulaire (Pulse Width Modulation) de rapport
+ cyclique dépendant de l’angle de rotation souhaité et de période 20ms.
+ L'impulsion de direction Id a une durée comprise entre 1 et 2 ms ; Id =
+ 1,5 ms roues droites, Id compris entre 1,5 et 2ms : virage à gauche ; Id
+ compris entre 1et 1,5ms : virage à droite.
+ Il est important de mesurer les valeurs limites de Id qui font buter les
+ roues directrices contre le châssis.
+ Le servomoteur.(incorporé au châssis): Il est constitué principalement d'un
+ petit moteur électrique à courant continu, d'un potentiomètre de recopie,
+ d'un circuit monostable, d'un comparateur et d'un axe de sortie.
+ L'arbre de sortie du moteur est relié par un jeu d'engrenages à l'axe du
+ potentiomètre de référence et à l'arbre de sortie, assurant la commande
+ du train avant.
+ Le monostable interne élabore une impulsion positive de durée dépendant
+ d'un condensateur fixe et de la résistance variable, liée à la position
+ du curseur du potentiomètre.
+ Le curseur est réglé en position médiane, les roues étant droites.
+ L'impulsion produite Ig est de durée Tg=1,5ms.
+ Le comparateur à deux entrées élabore une impulsion Id de durée égale à
+ la différence Tr-Ti =Td .
+ (Tr durée de l'impulsion reçue, Ti durée de l'impulsion issue du monostable
+ à l'instant i et prenant en compte la rotation du curseur de P) Si Td est
+ positive, le moteur est alimenté en direct et tourne jusqu'à annuler Td;
+ il s’arrête alors.
+ Si Td est négative, l'alimentation du moteur est inversée, celui-ci tourne
+ dans l'autre sens jusqu'à annuler Td.
+ Les roues arrières sont motrices, entraînées par un moteur à courant continu
+ alimenté par une batterie d’accumulateurs de forte puissance (7,2V et 2AH)
+ associé à un jeu d’engrenages (le différentiel).
+ La commande du moteur de propulsion se réalise grâce à un signal modulé
+ PWM (Pulse Width Modulation) de période 20ms.
+ La durée de l’impulsion positive peut varier de 1 à 2ms ; 1.5 ms à l’arrêt.
+ Pour assurer une vitesse de déplacement compatible avec les dimensions
+ du circuit une valeur située entre 1,55 et 1,65 ms est suffisante.
+ Une valeur inférieure à 1,5 ms correspond d’abord au freinage puis à une
+ marche arrière (celle-ci ne doit pas être mise en œuvre pendant plus de
+ 6s).
+ La gestion de la puissance développée par le moteur de propulsion est effectuée
+ par un variateur électronique fourni avec le châssis.
+ Ce variateur doit être piloté par la carte µC maître.
+ Des connecteurs miniatures à 3 broches permettent de transmettre les commandes
+ au servomoteur de direction et au variateur de puissance : fil noir = masse ;
+ fil rouge = +5V, Fil blanc ou orange = PWM.
+ L’énergie est fournie par deux batteries B1 et B2 (7,2V et 2 AH).
+ B1 alimente le moteur de propulsion, B2 fournit l’énergie aux autres dispositif
+s électroniques
+\end_layout
+
+\begin_layout Chapter
+Programme du microcontrôleur maitre
+\end_layout
+
+\begin_layout Chapter
+Programme du microcontrôleur esclave
+\end_layout
+
+\end_body
+\end_document
