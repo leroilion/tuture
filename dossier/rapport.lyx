@@ -1,4 +1,4 @@
-#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+#LyX 1.6.4 created this file. For more info see http://www.lyx.org/
 \lyxformat 345
 \begin_document
 \begin_header
@@ -139,17 +139,17 @@ La propulsion
 \end_layout
 
 \begin_layout Standard
-La propulsion est faite au moyen d'un moteur à courant continue commander
+La propulsion est faite au moyen d'un moteur à courant continu commandé
  par un variateur.
  La transmission de la sortie du moteur vers les roue se fait au moyen d'un
  réducteur différentiel.
- Le moteur est commander par un variateur que nous devons commander.
+ Le moteur est commandé par un variateur que nous devons contrôler.
  Le variateur s'occupe de la gestion des largeurs d'impulsions envoyée au
  moteur par l'intermédiaire d'un pont en H.
 \end_layout
 
 \begin_layout Standard
-Pour faire avancer la voiture, nous aurons à controler ce variateur par
+Pour faire avancer la voiture, nous aurons à contrôler ce variateur par
  l'intermédiaire d'un signal périodique.
  Pour que la voiture soit à l'arrêt (point mort), il faut envoyer un signal
  périodique de 50Hz avec un rapport cyclique de 7.5%.
@@ -194,11 +194,11 @@ L'électronique
 \end_layout
 
 \begin_layout Section
-Carte maitre
+Carte maître
 \end_layout
 
 \begin_layout Standard
-La carte maitre est une carte contenant un AT89C2051
+La carte maître est une carte contenant un AT89C2051
 \begin_inset Foot
 status open
 
@@ -216,12 +216,12 @@ Microcontrôleur de 20 broches et E/S de chez ATMEL
 \end_layout
 
 \begin_layout Standard
-Pour ce faire, cette carte est relié à la carte de détection de ligne, au
- servo-moteur de direction et variateur de puissance, ainsi que la carte
+Pour ce faire, cette carte est reliée à la carte de détection de ligne,
+ au servo-moteur de direction et variateur de puissance, ainsi que la carte
  esclave que nous verrons juste après.
  Cette dernière connexion permet au 2 cartes de communiquer entre elles.
  Enfin, il y a 2 boutons poussoirs, ainsi qu'une diode LED qui servent pour
- le débuguage.
+ le débogage.
 \end_layout
 
 \begin_layout Section
@@ -255,7 +255,7 @@ Détection de ligne au sol
 \end_layout
 
 \begin_layout Standard
-la détection de la ligne au sol
+La détection de la ligne au sol
 \begin_inset Foot
 status open
 
@@ -278,12 +278,12 @@ status open
 \end_inset
 
 .
- Ces 2 capteurs sont placés sur le bouclier avant (un placé à gauche l’autre
+ Ces 2 capteurs sont placés sur le bouclier avant (un placé à gauche, l’autre
  à droite).
 \end_layout
 
 \begin_layout Standard
-Pour avoir une meilleure précision et trajectiore, nous avons déplacés ces
+Pour avoir une meilleure précision et trajectoire, nous avons déplacé ces
  2 capteurs de manière à les rapprocher l'un de l'autre.
  Ainsi, lorsque nous nous trouvons en ligne droite, les 2 capteurs nous
  indiquent la couleur noir.
@@ -341,7 +341,7 @@ Oscillateur astable
 \end_inset
 
 .
- Pour activer ou désactiver le LASER, nous controlons le /RST du 555.
+ Pour activer ou désactiver le LASER, nous contrôlons le /RST du 555.
 \end_layout
 
 \begin_layout Section
@@ -358,7 +358,7 @@ L'asservissement
 \end_layout
 
 \begin_layout Chapter
-Une structure en couche d'abstraction
+Une structure en couches d'abstraction
 \end_layout
 
 \begin_layout Standard
@@ -389,7 +389,7 @@ Une variable de contrôle qui nous permet de contrôler la propulsion et la
 \begin_layout Itemize
 La variable d'état basse.
  Cette variable recopie la variable d'état si nous ne sommes pas dans la
- zone d'arrivé.
+ zone d'arrivée.
 \end_layout
 
 \begin_layout Itemize
