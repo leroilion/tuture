@@ -595,6 +595,7 @@ Les états possibles et leur numéro associé sont détaillés dans l'image suiv
 \begin_layout Standard
 \begin_inset Graphics
 	filename image/piste.png
+	scale 40
 
 \end_inset
 
@@ -615,6 +616,7 @@ La machine à états pour contrôler la voiture, qui découle de cette étude
 \begin_layout Standard
 \begin_inset Graphics
 	filename image/machine.png
+	scale 30
 
 \end_inset
 
