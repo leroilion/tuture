@@ -1,0 +1,120 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf250
+{\fonttbl\f0\fnil\fcharset0 LucidaGrande;\f1\fmodern\fcharset0 CourierNewPSMT;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker -}{\leveltext\leveltemplateid1\'01-;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker -}{\leveltext\leveltemplateid101\'01-;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker o}{\leveltext\leveltemplateid102\'01o;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
+\margl1440\margr1440\margb1800\margt1800
+\deftab708
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\sl276\slmult1\sa200\qc\pardirnatural
+
+\f0\fs22 \cf0 \expnd0\expndtw0\kerning0
+\up0 \nosupersub \ulnone \outl0\strokewidth0 \strokec0 Int\'e9gration des syst\'e8mes \'e9lectroniques\
+Compte Rendu\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\sl276\slmult1\sa200\qj\pardirnatural
+\expnd0\expndtw0\kerning0
+	\
+	Dans le cadre du projet, on a pris d'abord la d\'e9cision de se s\'e9parer en deux bin\'f4mes pour partager le travail \'96 un bin\'f4me (Jeremy Cheynet et Thomas Kaczmarek) pour g\'e9rer la partie motrice et la direction (travaillant sur la carte ma\'eetre) et un bin\'f4me (Mohamed Amine Bergach et Adrian Victor Manoliu) pour la partie affichage, r\'e9ception IR et le tir (travaillant sur la carte esclave).\
+	
+\b \expnd0\expndtw0\kerning0
+La gestion de l\'92affichage, de l\'92IR et du tir\
+
+\b0 \expnd0\expndtw0\kerning0
+	Comme on a dit, pour cette partie le travail a \'e9t\'e9 fait sur la carte esclave, car le LCD, le r\'e9cepteur infra-rouge et l\'92\'e9metteur laser \'e9taient command\'e9s par cette carte.\
+	Le programme utilis\'e9 comme point de d\'e9part a \'e9t\'e9 celui d\'92affichage LCD \'e9crit pendant la p\'e9riode de d\'e9but du P1. L\'92\'e9cran reste allum\'e9 pendant le fonctionnement de la voiture et l\'92affichage se fait sur deux lignes\'a0:\
+\pard\tx705\tx1065\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li1065\fi-1065\sl276\slmult1\sa200\qj\pardirnatural
+\ls1\ilvl0{\listtext	-	}Le message sur la premi\'e8re ligne d\'e9pend de l\'92\'e9tat de la voiture \'96 lorsqu\'92on se retrouve hors des zones de balises, le message est simplement \'abISE EXPRESS\'bb. Dans la zone de la balise cible, le message d\'e9pend de ce qu\'92on a atteint, donc de l\'92information re\'e7ue en IR\'a0: \'abPAS DE TIR\'bb, \'abTIR A GAUCHE\'bb, \'abTIR AU CENTRE\'bb, \'abTIR A DROITE\'bb.\
+{\listtext	-	}Le message sur la deuxi\'e8me ligne d\'e9pend du nombre de points accumul\'e9s jusqu\'92\'e0 pr\'e9sent et du nombre de tours effectu\'e9s (totale 3).\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li708\sl276\slmult1\sa200\qj\pardirnatural
+\expnd0\expndtw0\kerning0
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\fi705\sl276\slmult1\sa200\qj\pardirnatural
+\expnd0\expndtw0\kerning0
+La partie infrarouge a \'e9t\'e9 g\'e9r\'e9e en utilisant la r\'e9ception s\'e9rie synchrone \'96 mode 1, SM0=0, SM1=1, REN=1, alors au d\'e9but SCON=01010000. Le Timer1 \'e9tait la r\'e9f\'e9rence, configur\'e9 en mode 2 pour un baud rate de 1200 baud. Le r\'e9cepteur IR \'e9tant li\'e9 \'e0 la broche P3.0 (RXD) de la carte esclave, dans le programme on appelait les \'e9tapes de r\'e9ception\'a0:\
+\
+jnb	RI,$\
+mov	A,SBUF\
+clr	RI\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\sl276\slmult1\sa200\qj\pardirnatural
+\expnd0\expndtw0\kerning0
+\
+	Le message en infra-rouge modul\'e9 \'e9tait un code sur un octet dans SBUF \'96 sept bits pour le message et le bit de parit\'e9 (ce dernier n\'92\'e9tait pas pris en compte dans les phases suivantes). Apr\'e8s la lecture, on remettait RI \'e0 0, avant de traiter l\'92information re\'e7ue.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\fi705\sl276\slmult1\sa200\qj\pardirnatural
+\expnd0\expndtw0\kerning0
+\
+On attendait l\'92arriv\'e9e dans la zone d\'92influence d\'92une des balises et, une fois le bit RI mis \'e0 1, on lisait le message et on agissait en accord\'a0:\
+\pard\tx705\tx1065\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li1065\fi-1065\sl276\slmult1\sa200\qj\pardirnatural
+\ls2\ilvl0\expnd0\expndtw0\kerning0
+{\listtext	-	}La balise \'ab\'a00\'a0\'bb - le signal correspondant (30h) avait deux effets\'a0: \
+\pard\tx1425\tx1785\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li1785\fi-1785\sl276\slmult1\sa200\qj\pardirnatural
+\ls2\ilvl1
+\f1 \expnd0\expndtw0\kerning0
+{\listtext	o	}
+\f0 \expnd0\expndtw0\kerning0
+l\'92arr\'eat temporaire de la voiture \'96 on annulait pour 3 secondes le bit de la broche P3.1 qui communiquait avec la carte ma\'eetre pour arr\'eater le moteur\
+\ls2\ilvl1
+\f1 \expnd0\expndtw0\kerning0
+{\listtext	o	}
+\f0 \expnd0\expndtw0\kerning0
+l\'92incr\'e9mentation du nombre de tours (valeur m\'e9moris\'e9e dans le registre R2). Cette fois-ci on utilisait un \'ab\'a0flag\'a0\'bb pour ne pas incr\'e9menter le registre plusieurs fois au m\'eame arr\'eat \'96 avant la rentr\'e9e dans la zone \'ab\'a00\'a0\'bb le flag \'e9tait annul\'e9, puis, une fois la balise d\'e9tect\'e9e. On le mettait \'e0 1 apr\'e8s l\'92incr\'e9mentation.\
+\pard\tx705\tx1065\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li1065\fi-1065\sl276\slmult1\sa200\qj\pardirnatural
+\ls2\ilvl0{\listtext	-	}La balise cible \'96 pouvant \'e9mettre quatre messages\'a0:\
+\pard\tx1425\tx1785\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li1785\fi-1785\sl276\slmult1\sa200\qj\pardirnatural
+\ls2\ilvl1
+\f1 \expnd0\expndtw0\kerning0
+{\listtext	o	}
+\f0 \expnd0\expndtw0\kerning0
+\'ab\'a04\'a0\'bb (34h) \'96 absence d\'92impact laser\
+\ls2\ilvl1
+\f1 \expnd0\expndtw0\kerning0
+{\listtext	o	}
+\f0 \expnd0\expndtw0\kerning0
+\'ab\'a0D\'a0\'bb (44h) \'96 tir \'e0 droite\
+\ls2\ilvl1
+\f1 \expnd0\expndtw0\kerning0
+{\listtext	o	}
+\f0 \expnd0\expndtw0\kerning0
+\'ab\'a0C\'a0\'bb (43h) \'96 tir au centre\
+\ls2\ilvl1
+\f1 \expnd0\expndtw0\kerning0
+{\listtext	o	}
+\f0 \expnd0\expndtw0\kerning0
+\'ab\'a0G\'a0\'bb (47h) \'96 tir \'e0 gauche\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li1425\sl276\slmult1\sa200\qj\pardirnatural
+\expnd0\expndtw0\kerning0
+Quand-m\'eame, en rentrant dans la zone de cette balise, on appelait les lignes de code correspondantes \'e0 l\'92activation du laser (P1.2) et de la sir\'e8ne (P1.3). Puis, en fonction du message re\'e7u, on envoyait le texte correspondant sur le LCD. Pour g\'e9rer les points, on utilisait le registre R3 et trois fanions, TG (tir gauche), TC (tir centre), TD (tir droite). A la rentr\'e9e dans la zone, R3 gardait sa valeur d\'92avant, mais les fanions \'e9taient mis \'e0 0. Au cas du tir avec succ\'e8s, si le fanion de la cible atteinte \'e9tait nul, on rajoutait \'e0 R3 les points correspondants et on mettait 1 sur le fanion de la cible. Apr\'e8s chaque traitement d\'92un message, \'e9tant donn\'e9 la p\'e9riode de 20ms de l\'92\'e9metteur, on attendait 40ms avant de tester de nouveau RI. C'est-\'e0-dire, on v\'e9rifiait si on est encore dans la zone de la balise. Si RI=1, alors le cycle d\'e9crit au-dessus recommen\'e7ait. Si RI=0, alors on \'e9tait sorti de la zone de la balise, donc il fallait \'e9teindre le laser, arr\'eater la sir\'e8ne et afficher le message normal \'ab\'a0ISE EXPRESS\'a0\'bb.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li708\sl276\slmult1\sa200\qj\pardirnatural
+\expnd0\expndtw0\kerning0
+\
+\
+\
+L\'92organigramme du programme:\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+
+\f2\fs24 \cf0 \kerning1\expnd0\expndtw0 \up0 \nosupersub \ulnone \outl0\strokewidth0 {{\NeXTGraphic pastedGraphic.pdf \width8360 \height11420
+}¬}\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab708\li708\sl276\slmult1\sa200\qj\pardirnatural
+
+\f0\fs22 \cf0 \expnd0\expndtw0\kerning0
+\up0 \nosupersub \ulnone \outl0\strokewidth0 \strokec0 \
+\
+SP: INIT (INITIALISATION):\
+Effacer les variables locales (flag pour le comptage de points ,et de tours)\
+Attendre 40ms pour LCD\
+mov	SCON,#01010000b\
+Initialisation des compteurs de points et de tours (R1 et R2)\
+Initialiser LCD avec :\
+mov	P2,#14h  curseur vers droite\
+mov	P2,#0Ch  allumer LCD\
+mov	P2,#38h  utiliser 2 lignes pour afficher\
+\
+le LCD est utilis\'e9 avec : \
+				RS 	P0.5\
+				RW	 P0.6\
+				E	 P0.7\
+Le bit de communication avec la carte maitre est p3.1\
+\
+\
+\
+\
+}
