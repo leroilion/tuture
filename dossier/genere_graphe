@@ -1,0 +1,4 @@
+#!/bin/sh
+#necesite l'installation de graphviz pour generer et eventuellement imagemagick pour afficher le resultat.
+dot -omachine.png -Tpng:cairo:gd machine
+display machine.png

@@ -1,0 +1,19 @@
+digraph finite_state_machine {
+	rankdir=LR;
+	len=1000.0;
+	size="800,100"
+	node [shape = circle];
+	
+
+"4\nTourner à droite"->"3\nTourner à droite"
+"3\nTourner à droite"->"4\nTourner à droite"
+"0\nAller tout droit\n Vitesse Rapide"->"3\nTourner à droite"
+"3\nTourner à droite"->"0\nAller tout droit\n Vitesse Rapide"
+"0\nAller tout droit\n Vitesse Rapide"->"1\nTourner à gauche"
+"1\nTourner à gauche"->"0\nAller tout droit\n Vitesse Rapide"
+"1\nTourner à gauche"->"2\nTourner à gauche"
+"2\nTourner à gauche"->"1\nTourner à gauche"
+"5\nS'arrêter"
+
+}
+
