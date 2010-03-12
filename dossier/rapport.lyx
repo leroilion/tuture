@@ -737,6 +737,338 @@ Le passage 1->3, 3->1, 4->0 ou 2->0, impossible en théorie, est permis car
 Organigramme de la carte maitre
 \end_layout
 
+\begin_layout Section
+Le main
+\end_layout
+
+\begin_layout Standard
+Le programme principal du microcontrôleur s'occupe de faire l'initialisation,
+ et puis tourner en boucle infinie en appelant les sous programmes de calcul
+ de la vitesse et de la trajectoire.
+\end_layout
+
+\begin_layout Standard
+La partie commande des moteurs de la direction est gérée par une interruption.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/organigramme_maitre.bmp
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Le main de la carte maitre
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Initialisation
+\end_layout
+
+\begin_layout Standard
+L'initialisation permet de mettre en route les timer0, activer les interruptions
+ et initialiser les variables aux bonnes valeurs.
+\end_layout
+
+\begin_layout Section
+Choix de l'état
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/choix_etat.bmp
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Organigramme de choix_etat
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Choix de l'état, version 2
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/choix_etat_2.bmp
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Organigramme du sous programme coix_etat_2 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Réglage
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/reglage.bmp
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Organigramme de la fonction réglage
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Agir
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/agir.bmp
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Organigramme de la fonction Agir
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Conv_pour_bin
+\end_layout
+
+\begin_layout Standard
+Cette fonction lit les valeurs chargées en mémoire par la fonction agir
+ (une variable pour la direction et une pour la propulsion).
+ Ces valeurs étant en pourcentage (comme nous l'avons expliqué au chapitre
+ 3), nous les convertissons en valeur absolu qui seront utilisées par la
+ fonction chargement.
+\end_layout
+
+\begin_layout Section
+Chargement
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/chargement.bmp
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Organigramme du sous programme chargement
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Interruption timer 0
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/interruption.bmp
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Organigramme de l'interruption du timer 0
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Part
 Tir sur la cible
 \end_layout
@@ -1007,142 +1339,6 @@ Le bit de communication avec la carte maitre est p3.1
 
 \begin_layout Part
 Annexe
-\end_layout
-
-\begin_layout Chapter
-Règlement
-\end_layout
-
-\begin_layout Standard
-Le mobile autopropulsé doit se déplacer en suivant une piste à partir d’une
- ligne de départ.
- Il doit détecter sa position par rapport à la piste grâce à 2 capteurs
- infrarouge ( 1 capteur = 1émetteur IR modulé à f = 7kHz (diode IR) et un
- récepteur délivrant un signal tout ou rien (0V ou 5V)) placés sur le bouclier
- avant (un placé à gauche l’autre à droite) et modifier si nécessaire sa
- trajectoire.
-\begin_inset Newline newline
-\end_inset
-
-La piste est constituée dans sa longueur de trois bandes de largeur 4 cm :
- une bande centrale noire limitée de part et d’autre de bandes blanches.
-\begin_inset Newline newline
-\end_inset
-
-La piste est globalement rectangulaire, à angles arrondis et aux côtés sinueux.
-\begin_inset Newline newline
-\end_inset
-
-La ligne de départ ( bande noire perpendiculaire à la piste) se trouve au
- milieu du grand côté droit.
-\begin_inset Newline newline
-\end_inset
-
-Le mobile embarque un laser Infra Rouge (IR) modulé à Flaser = 5 kHz grâce
- à un circuit Timer LM 555, et un détecteur IR (TSOP 1738) accordé sur la
- fréquence de modulation f = 38 kHz émise par la cible distante.
- Le déclenchement de l’émission laser est obtenu en plaçant un ‘1’ logique
- sur la broche /RST du circuit LM555.
-\begin_inset Newline newline
-\end_inset
-
-La cible, sensible au rayonnement laser précédent, est placée en regard
- du milieu du grand coté gauche, et à l’extérieur de la piste.
-\begin_inset Newline newline
-\end_inset
-
- Cette cible « intelligente » émet un faisceau IR modulé à 38 kHz par un
- signal numérique à 1200 Bauds, répété toutes les 20 ms, correspondant au
- code ASCII des chiffres ou des caractères du message à transmettre auquel
- est ajouté le bit de parité de l’octet initial en bit de poids fort.
-\begin_inset Newline newline
-\end_inset
-
-Ce message est détecté par le récepteur embarqué (TSOP 1738) qui restitue
- le code ASCII initial avec le bit de parité.
-\begin_inset Newline newline
-\end_inset
-
-La cible envoie les codes suivants :
-\end_layout
-
-\begin_layout Itemize
-« 4 » en l’absence d’impact laser, code ASCII : 34h + bit de parité
-\end_layout
-
-\begin_layout Itemize
-« D » pour tir à droite (1 point), code ASCII : 44h + bit de parité
-\end_layout
-
-\begin_layout Itemize
-« C » pour tir au centre (3 points) , code ASCII : 43h + bit de parité
-\end_layout
-
-\begin_layout Itemize
-« G » pour tir à gauche(1 point), code ASCII : 47h + bit de parité.
-\end_layout
-
-\begin_layout Standard
-Un écran LCD fixé sur le mobile, doit afficher les messages qui correspondent
- aux états définis ci dessus.
-\begin_inset Newline newline
-\end_inset
-
-Le tir au laser sur la cible ne doit être déclenché que lorsque le mobile
- se trouve au voisinage de la cible ; un signal sonore spécifique (sirène)
- est simultanément émis pour avertir les spectateurs.
-\begin_inset Newline newline
-\end_inset
-
-Le mobile devra accomplir au moins trois tours de piste chronométrés.
- Le mobile MB : Il est constitué d’un châssis rigide à quatre roues.
- Les roues avant sont directrices et actionnées par un servomoteur de direction
- commandé par un signal rectangulaire (Pulse Width Modulation) de rapport
- cyclique dépendant de l’angle de rotation souhaité et de période 20ms.
- L'impulsion de direction Id a une durée comprise entre 1 et 2 ms ; Id =
- 1,5 ms roues droites, Id compris entre 1,5 et 2ms : virage à gauche ; Id
- compris entre 1et 1,5ms : virage à droite.
- Il est important de mesurer les valeurs limites de Id qui font buter les
- roues directrices contre le châssis.
- Le servomoteur.(incorporé au châssis): Il est constitué principalement d'un
- petit moteur électrique à courant continu, d'un potentiomètre de recopie,
- d'un circuit monostable, d'un comparateur et d'un axe de sortie.
- L'arbre de sortie du moteur est relié par un jeu d'engrenages à l'axe du
- potentiomètre de référence et à l'arbre de sortie, assurant la commande
- du train avant.
- Le monostable interne élabore une impulsion positive de durée dépendant
- d'un condensateur fixe et de la résistance variable, liée à la position
- du curseur du potentiomètre.
- Le curseur est réglé en position médiane, les roues étant droites.
- L'impulsion produite Ig est de durée Tg=1,5ms.
- Le comparateur à deux entrées élabore une impulsion Id de durée égale à
- la différence Tr-Ti =Td .
- (Tr durée de l'impulsion reçue, Ti durée de l'impulsion issue du monostable
- à l'instant i et prenant en compte la rotation du curseur de P) Si Td est
- positive, le moteur est alimenté en direct et tourne jusqu'à annuler Td;
- il s’arrête alors.
- Si Td est négative, l'alimentation du moteur est inversée, celui-ci tourne
- dans l'autre sens jusqu'à annuler Td.
- Les roues arrières sont motrices, entraînées par un moteur à courant continu
- alimenté par une batterie d’accumulateurs de forte puissance (7,2V et 2AH)
- associé à un jeu d’engrenages (le différentiel).
- La commande du moteur de propulsion se réalise grâce à un signal modulé
- PWM (Pulse Width Modulation) de période 20ms.
- La durée de l’impulsion positive peut varier de 1 à 2ms ; 1.5 ms à l’arrêt.
- Pour assurer une vitesse de déplacement compatible avec les dimensions
- du circuit une valeur située entre 1,55 et 1,65 ms est suffisante.
- Une valeur inférieure à 1,5 ms correspond d’abord au freinage puis à une
- marche arrière (celle-ci ne doit pas être mise en œuvre pendant plus de
- 6s).
- La gestion de la puissance développée par le moteur de propulsion est effectuée
- par un variateur électronique fourni avec le châssis.
- Ce variateur doit être piloté par la carte µC maître.
- Des connecteurs miniatures à 3 broches permettent de transmettre les commandes
- au servomoteur de direction et au variateur de puissance : fil noir = masse ;
- fil rouge = +5V, Fil blanc ou orange = PWM.
- L’énergie est fournie par deux batteries B1 et B2 (7,2V et 2 AH).
- B1 alimente le moteur de propulsion, B2 fournit l’énergie aux autres dispositif
-s électroniques
 \end_layout
 
 \begin_layout Chapter
