@@ -51,23 +51,23 @@ Voiture autoguidée
 \end_layout
 
 \begin_layout Author
-Amine
+Adrian Victor Manoliu
 \begin_inset Newline newline
 \end_inset
 
-Victor
+Jeremy Cheynet
 \begin_inset Newline newline
 \end_inset
 
-Thomas
+Mohamed Amine Bergach
 \begin_inset Newline newline
 \end_inset
 
-Jérémy
+Thomas Kaczmarek
 \end_layout
 
 \begin_layout Date
-Du xx au 26 février
+Du 1 au 26 février
 \begin_inset Newline newline
 \end_inset
 
@@ -92,6 +92,7 @@ Alain Lebegue et François Delavault
 
 \begin_inset Graphics
 	filename image/blanc.png
+	scale 400
 
 \end_inset
 
@@ -124,6 +125,22 @@ LatexCommand tableofcontents
 
 \begin_layout Chapter*
 Introduction
+\end_layout
+
+\begin_layout Standard
+Le projet consiste à fabriquer une voiture qui suis une ligne noire tracée
+ au sol.
+ La voiture nous est fournie pas le professeur, avec le système de propulsion
+ et de direction.
+\end_layout
+
+\begin_layout Standard
+Dans le cadre du projet, on a pris d'abord la décision de se séparer en
+ deux binômes pour partager le travail – un binôme (Jeremy Cheynet et Thomas
+ Kaczmarek) pour gérer la partie motrice et la direction (travaillant sur
+ la carte maître) et un binôme (Mohamed Amine Bergach et Adrian Victor Manoliu)
+ pour la partie affichage, réception IR et le tir (travaillant sur la carte
+ esclave).
 \end_layout
 
 \begin_layout Part
@@ -445,6 +462,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename image/timer0_total.png
 
@@ -454,6 +472,7 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -591,11 +610,13 @@ Les capteurs de couleur à l'avant de la voiture ont été rapprochés afin
 Les états possibles et leur numéro associé sont détaillés dans l'image suivante
  :
 \begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename image/piste.png
 	scale 40
@@ -606,6 +627,7 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -639,11 +661,13 @@ La machine à états pour contrôler la voiture, qui découle de cette étude
 
 \begin_layout Standard
 \begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename image/machine.png
 	scale 30
@@ -654,6 +678,7 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -709,11 +734,260 @@ Le passage 1->3, 3->1, 4->0 ou 2->0, impossible en théorie, est permis car
 \end_layout
 
 \begin_layout Chapter
-Un programme séquentiel
+Organigramme de la carte maitre
 \end_layout
 
 \begin_layout Part
 Tir sur la cible
+\end_layout
+
+\begin_layout Chapter
+Gestion de l'affichage
+\end_layout
+
+\begin_layout Standard
+Le programme utilisé comme point de départ a été celui d’affichage LCD écrit
+ pendant la période de début du P1.
+ L’écran reste allumé pendant le fonctionnement de la voiture et l’affichage
+ se fait sur deux lignes :
+\end_layout
+
+\begin_layout Itemize
+Le message sur la première ligne dépend de l’état de la voiture – lorsqu’on
+ se retrouve hors des zones de balises, le message est simplement «ISE EXPRESS».
+ Dans la zone de la balise cible, le message dépend de ce qu’on a atteint,
+ donc de l’information reçue en IR : «PAS DE TIR», «TIR A GAUCHE», «TIR
+ AU CENTRE», «TIR A DROITE».
+\end_layout
+
+\begin_layout Itemize
+Le message sur la deuxième ligne dépend du nombre de points accumulés jusqu’à
+ présent et du nombre de tours effectués (total 3).
+ 
+\end_layout
+
+\begin_layout Chapter
+La balise Infra-rouge et le tir
+\end_layout
+
+\begin_layout Standard
+La partie infrarouge a été gérée en utilisant la réception série synchrone
+ – mode 1, SM0=0, SM1=1, REN=1, alors au début SCON=01010000.
+ Le Timer1 était la référence, configuré en mode 2 pour un baud rate de
+ 1200 baud.
+ Le récepteur IR étant lié à la broche P3.0 (RXD) de la carte esclave, dans
+ le programme on appelait les étapes de réception :
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+jnb RI,$
+\begin_inset Newline newline
+\end_inset
+
+mov A,SBUF
+\begin_inset Newline newline
+\end_inset
+
+clr RI
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Le message en infra-rouge modulé était un code sur un octet dans SBUF –
+ sept bits pour le message et le bit de parité (ce dernier n’était pas pris
+ en compte dans les phases suivantes).
+ Après la lecture, on remettait RI à 0, avant de traiter l’information reçue.
+\end_layout
+
+\begin_layout Standard
+On attendait l’arrivée dans la zone d’influence d’une des balises et, une
+ fois le bit RI mis à 1, on lisait le message et on agissait en accord :
+\end_layout
+
+\begin_layout Section
+La balise « 0 »
+\begin_inset space ~
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+La balise « 0 » - le signal correspondant (30h) avait deux effets : 
+\end_layout
+
+\begin_layout Itemize
+l’arrêt temporaire de la voiture – on annulait pour 3 secondes le bit de
+ la broche P3.1 qui communiquait avec la carte maître pour arrêter le moteur.
+\end_layout
+
+\begin_layout Itemize
+L’incrémentation du nombre de tours (valeur mémorisée dans le registre R2).
+ Cette fois-ci on utilisait un « flag » pour ne pas incrémenter le registre
+ plusieurs fois au même arrêt – avant la rentrée dans la zone « 0 » le flag
+ était annulé, puis, une fois la balise détectée.
+ On le mettait à 1 après l’incrémentation.
+\end_layout
+
+\begin_layout Section
+La balise cible
+\begin_inset space ~
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+La balise cible – pouvant émettre quatre messages :
+\end_layout
+
+\begin_layout Itemize
+« 4 » (34h) – absence d’impact laser
+\end_layout
+
+\begin_layout Itemize
+« D » (44h) – tir à droite
+\end_layout
+
+\begin_layout Itemize
+« C » (43h) – tir au centre
+\end_layout
+
+\begin_layout Itemize
+« G » (47h) – tir à gauche
+\end_layout
+
+\begin_layout Standard
+Quand même, en rentrant dans la zone de cette balise, on appelait les lignes
+ de code correspondantes à l’activation du laser (P1.2) et de la sirène (P1.3).
+ Puis, en fonction du message reçu, on envoyait le texte correspondant sur
+ le LCD.
+ Pour gérer les points, on utilisait le registre R3 et trois fanions, TG
+ (tir gauche), TC (tir centre), TD (tir droite).
+ A la rentrée dans la zone, R3 gardait sa valeur d’avant, mais les fanions
+ étaient mis à 0.
+ Au cas du tir avec succès, si le fanion de la cible atteinte était nul,
+ on rajoutait à R3 les points correspondants et on mettait 1 sur le fanion
+ de la cible.
+ Après chaque traitement d’un message, étant donné la période de 20ms de
+ l’émetteur, on attendait 40ms avant de tester de nouveau RI.
+ C'est-à-dire, on vérifiait si on est encore dans la zone de la balise.
+ Si RI=1, alors le cycle décrit au-dessus recommençait.
+ Si RI=0, alors on était sorti de la zone de la balise, donc il fallait
+ éteindre le laser, arrêter la sirène et afficher le message normal « ISE
+ EXPRESS ».
+ 
+\end_layout
+
+\begin_layout Chapter
+Organigramme de la carte esclave
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename image/organigramme.jpg
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+organigramme de la carte esclave
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+SP: INIT (INITIALISATION):
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Effacer les variables locales (flag pour le comptage de points ,et de tours)
+\end_layout
+
+\begin_layout Standard
+Attendre 40ms pour LCD
+\begin_inset Newline newline
+\end_inset
+
+mov SCON,#01010000b
+\end_layout
+
+\begin_layout Standard
+Initialisation des compteurs de points et de tours (R1 et R2)
+\end_layout
+
+\begin_layout Standard
+Initialiser LCD avec :
+\end_layout
+
+\begin_layout Standard
+mov P2,#14h curseur vers droite
+\begin_inset Newline newline
+\end_inset
+
+mov P2,#0Ch ;allumer LCD
+\begin_inset Newline newline
+\end_inset
+
+mov P2,#38h ;utiliser 2 lignes pour afficher
+\end_layout
+
+\begin_layout Standard
+le LCD est utilisé avec :
+\end_layout
+
+\begin_layout Itemize
+RS P0.5
+\end_layout
+
+\begin_layout Itemize
+RW P0.6
+\end_layout
+
+\begin_layout Itemize
+E P0.7
+\end_layout
+
+\begin_layout Standard
+Le bit de communication avec la carte maitre est p3.1 
 \end_layout
 
 \begin_layout Standard
