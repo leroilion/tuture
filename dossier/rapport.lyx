@@ -422,8 +422,8 @@ Pour générer les 2 signaux, nous utilisons un seul timer.
 
 \begin_layout Standard
 Ensuite, après avoir mis le bit en question à 0, nous chargeons dans le
- timer un temps d'attente (/D) de manière à ce que le temps précédent et
- celui fasse exactement 2.5ms.
+ timer un temps d'attente (/D) de manière à ce que le temps précédent plus
+ celui-ci fasse exactement 2.5ms.
 \end_layout
 
 \begin_layout Standard
@@ -434,7 +434,7 @@ A partir de ce moment, nous passons à 1 le bit de contrôle du variateur
 \begin_layout Standard
 Enfin, nous mettons à 0 le bit de contrôle du moteur, et rechargeons le
  timer avec un dernier temps (/M) d'attente de manière à ce que les 4 phases
- aient une durée de 20ms.
+ aient une durée totale de 20ms.
 \end_layout
 
 \begin_layout Standard
@@ -465,17 +465,13 @@ Contrôle du timer 0 pour la propulsion et la direction
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
 \end_layout
 
 \begin_layout Subsection
-Verifier la disponibilité du mutex
+Vérifier la disponibilité du mutex
 \end_layout
 
 \begin_layout Standard
@@ -488,18 +484,18 @@ Pendant les 3 première phase de rechargement du timer, il ne faut pas modifier
  les valeurs à charger dans le timer.
  En effet, si pendant l'attente de la phase 1, nous modifions la phase 2
  (qui ne correspond donc plus à l'attente que nous venons d'effectuer),
- cela fait que les 2 premières phases de ferront plus 2.5ms comme nous voulons,
+ cela fait que les 2 premières phases ne feront plus 2.5ms comme nous voulons,
  mais peut-être plus ou peut-être moins.
  Ainsi, notre signal n'est plus périodique à une fréquence de 50Hz.
  Et cela peut avoir pour conséquence un emballement de la voiture dans le
  pire des cas, ou une mauvaise gestion de la vitesse et de la direction
- dans le meilleure de cas.
+ dans le meilleur des cas.
 \end_layout
 
 \begin_layout Standard
 Ainsi, lors de la première phase de rechargement du timer, nous prenons
  le mutex.
- A partir de ce moment, il deviens impossible de modifier les temps que
+ A partir de ce moment, il devient impossible de modifier les temps que
  nous avons calculé.
  Lors du début de la phase 4, nous pouvons modifier les temps d'attente
  puisque la dernière valeur d'un cycle vient d'être chargé dans le timer.
@@ -511,10 +507,10 @@ Lire la couche supérieur
 \end_layout
 
 \begin_layout Standard
-Si le mutex est disponible, nous interrogeons la couche supérieur pour savoir
- quelle est la valeur à recharger dans le timer.
- C'est étape permet calcul, en fonction du temps, la valeur à recharger
- dans le timer (65536-le temps en micro seconde).
+Si le mutex est disponible, nous interrogeons la couche supérieure pour
+ savoir quelle est la valeur à recharger dans le timer.
+ C'est étape permet de calculer, en fonction du temps, la valeur à recharger
+ dans le timer (65536-le temps en microsecondes).
 \end_layout
 
 \begin_layout Section
@@ -523,7 +519,7 @@ La couche 2 : Variable de contrôle proportionnelle
 
 \begin_layout Standard
 Pour simplifier la gestion de la vitesse, nous avons décidé de contrôler
- la vitesse de la voiture et se direction de manière proportionnelle.
+ la vitesse de la voiture et sa direction de manière proportionnelle.
 \end_layout
 
 \begin_layout Standard
@@ -557,7 +553,7 @@ Pour la direction, c'est la même chose
 \begin_layout Standard
 Cette étape consiste donc à lire la couche supérieur qui est cette variable
  proportionelle, et la convertir en un temps, tout en respectant la vitesse
- maximum à ne jamais dépasser que nous nous sommes fixé.
+ maximum à ne jamais dépasser que nous nous sommes fixée.
 \end_layout
 
 \begin_layout Section
@@ -567,7 +563,7 @@ La couche 3 : Variable d'état basse
 \begin_layout Standard
 Ici, nous avons une couche maitre par rapport à la couche supérieur.
  En effet, en fonction de la couche supérieur, et de l'état du microcontrôleur
- esclave, nous modifions les variables de contrôle proportionnelle.
+ esclave, nous modifions les variables de contrôle proportionnelles.
  Si le microcontrôleur esclave nous indique que nous sommes dans la zone
  de départ, nous faisons un pose.
  Sinon, en fonction de la machine à état, nous avançons plus ou moins vite,
@@ -580,8 +576,9 @@ La couche 4 : La machine à état
 
 \begin_layout Standard
 Nous avons pris la décision de créer un machine pour diriger la voiture.
- Nous avons ainsi plusieurs état possible comme aller tout droit, trop à
- droite ou trop à gauche, mais aussi des état virtuel et les sortie de ligne.
+ Nous avons ainsi plusieurs états possibles comme aller tout droit, trop
+ à droite ou trop à gauche, mais aussi des états virtuels et les sorties
+ de ligne.
 \end_layout
 
 \begin_layout Chapter
@@ -631,7 +628,7 @@ La piste est constituée dans sa longueur de trois bandes de largeur 4 cm :
 \begin_inset Newline newline
 \end_inset
 
-La piste est globalement rectangulaire, à angles arrondis et aux cotés sinueux.
+La piste est globalement rectangulaire, à angles arrondis et aux côtés sinueux.
 \begin_inset Newline newline
 \end_inset
 
