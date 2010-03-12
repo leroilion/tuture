@@ -1227,7 +1227,7 @@ Organigramme de la carte esclave
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -1335,18 +1335,6 @@ Le bit de communication avec la carte maitre est p3.1
 \end_inset
 
 
-\end_layout
-
-\begin_layout Part
-Annexe
-\end_layout
-
-\begin_layout Chapter
-Programme du microcontrôleur maître
-\end_layout
-
-\begin_layout Chapter
-Programme du microcontrôleur esclave
 \end_layout
 
 \end_body
